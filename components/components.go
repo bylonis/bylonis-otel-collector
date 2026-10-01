@@ -205,6 +205,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/yanggrpcreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zipkinreceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/zookeeperreceiver"
+	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/connector/forwardconnector"
 	"go.opentelemetry.io/collector/exporter"
@@ -516,6 +517,14 @@ func CoreComponents(
 	if err != nil {
 		errs = append(errs, err)
 	}
+
+	errs = append(errs,
+		addBylonisAliases(extensionsMap, func(f extension.Factory, t component.Type) extension.Factory { return aliasedExtension{f, t} }),
+		addBylonisAliases(receiversMap, func(f receiver.Factory, t component.Type) receiver.Factory { return aliasedReceiver{f, t} }),
+		addBylonisAliases(processorsMap, func(f processor.Factory, t component.Type) processor.Factory { return aliasedProcessor{f, t} }),
+		addBylonisAliases(exportersMap, func(f exporter.Factory, t component.Type) exporter.Factory { return aliasedExporter{f, t} }),
+		addBylonisAliases(connectorsMap, func(f connector.Factory, t component.Type) connector.Factory { return aliasedConnector{f, t} }),
+	)
 
 	factories := otelcol.Factories{
 		Extensions: extensionsMap,
