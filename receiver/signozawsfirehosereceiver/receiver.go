@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package signozawsfirehosereceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver"
+package signozawsfirehosereceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver"
 
 import (
 	"context"
@@ -16,7 +16,7 @@ import (
 
 	"github.com/goccy/go-json"
 
-	"github.com/SigNoz/signoz-otel-collector/config/configrouter"
+	"github.com/bylonis/bylonis-otel-collector/config/configrouter"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componentstatus"
 	"go.opentelemetry.io/collector/receiver"

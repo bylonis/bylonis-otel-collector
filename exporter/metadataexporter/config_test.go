@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
-	"github.com/SigNoz/signoz-otel-collector/exporter/metadataexporter/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/exporter/metadataexporter/internal/metadata"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component"

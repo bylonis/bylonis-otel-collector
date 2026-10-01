@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	strptime "github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/helper/ctimefmt"
+	strptime "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/helper/ctimefmt"
 )
 
 func StrptimeToGotime(layout string) (string, error) {

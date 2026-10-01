@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
-	internalmetadata "github.com/SigNoz/signoz-otel-collector/exporter/signozclickhousemetrics/internal/metadata"
-	"github.com/SigNoz/signoz-otel-collector/usage"
+	internalmetadata "github.com/bylonis/bylonis-otel-collector/exporter/signozclickhousemetrics/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/usage"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/config/configoptional"

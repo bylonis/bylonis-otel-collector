@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
 
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/cwlog/compression"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/cwlog/compression"
 )
 
 func TestType(t *testing.T) {

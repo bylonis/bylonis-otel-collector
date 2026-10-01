@@ -17,7 +17,7 @@ import (
 	"go.opentelemetry.io/collector/confmap/confmaptest"
 	"go.opentelemetry.io/collector/confmap/xconfmap"
 
-	"github.com/SigNoz/signoz-otel-collector/extension/healthcheckextension/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/extension/healthcheckextension/internal/metadata"
 )
 
 func TestLoadConfig(t *testing.T) {

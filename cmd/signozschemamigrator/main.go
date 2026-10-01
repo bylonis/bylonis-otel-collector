@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
-	schema_migrator "github.com/SigNoz/signoz-otel-collector/cmd/signozschemamigrator/schema_migrator"
-	"github.com/SigNoz/signoz-otel-collector/constants"
+	schema_migrator "github.com/bylonis/bylonis-otel-collector/cmd/signozschemamigrator/schema_migrator"
+	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"

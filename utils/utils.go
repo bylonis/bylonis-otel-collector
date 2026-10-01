@@ -102,7 +102,7 @@ func Unquote(value string) string {
 }
 
 // IsJSON works with encoding/json instead of goccy because of better benchmarking specifically for Valid function with default package
-// read here: https://github.com/SigNoz/signoz-otel-collector/pull/641#issuecomment-3068629067
+// read here: https://github.com/bylonis/bylonis-otel-collector/pull/641#issuecomment-3068629067
 func IsJSON(v any) bool {
 	switch val := v.(type) {
 	case string:

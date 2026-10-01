@@ -31,8 +31,8 @@ import (
 	"go.opentelemetry.io/otel/metric"
 	"go.uber.org/zap"
 
-	_ "github.com/SigNoz/signoz-otel-collector/pkg/parser/grok" // ensure grok parser gets registered.
-	"github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/internal/metadata"
+	_ "github.com/bylonis/bylonis-otel-collector/pkg/parser/grok" // ensure grok parser gets registered.
+	"github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/internal/metadata"
 )
 
 type logsPipelineProcessor struct {

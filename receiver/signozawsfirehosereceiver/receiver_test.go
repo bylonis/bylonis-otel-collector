@@ -18,7 +18,7 @@ import (
 
 	"github.com/goccy/go-json"
 
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/metadata"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/component/componenttest"

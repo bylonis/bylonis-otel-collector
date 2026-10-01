@@ -11,11 +11,11 @@ import (
 
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/entry"
 
-	signozlogspipelinestanzaadapter "github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/adapter"
-	signozstanzaentry "github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/entry"
-	signozlogspipelinestanzaoperator "github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/operator"
-	signozstanzahelper "github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/helper"
-	"github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/operators/regex"
+	signozlogspipelinestanzaadapter "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/adapter"
+	signozstanzaentry "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/entry"
+	signozlogspipelinestanzaoperator "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator"
+	signozstanzahelper "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/helper"
+	"github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/operators/regex"
 )
 
 func TestLoadConfig(t *testing.T) {

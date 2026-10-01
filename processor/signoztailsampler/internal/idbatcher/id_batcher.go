@@ -14,7 +14,7 @@
 
 // Package idbatcher defines a pipeline of fixed size in which the
 // elements are batches of ids.
-package idbatcher // import "github.com/SigNoz/signoz-otel-collector/processor/internal/idbatcher"
+package idbatcher // import "github.com/bylonis/bylonis-otel-collector/processor/internal/idbatcher"
 
 import (
 	"errors"

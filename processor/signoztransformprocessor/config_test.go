@@ -13,8 +13,8 @@ import (
 	"go.opentelemetry.io/collector/confmap/confmaptest"
 	"go.opentelemetry.io/collector/confmap/xconfmap"
 
-	"github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/internal/common"
-	"github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/internal/common"
+	"github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/internal/metadata"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl"
 )
 

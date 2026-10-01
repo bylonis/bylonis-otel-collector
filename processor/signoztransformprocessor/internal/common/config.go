@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package common // import "github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/internal/common"
+package common // import "github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/internal/common"
 
 import (
 	"fmt"

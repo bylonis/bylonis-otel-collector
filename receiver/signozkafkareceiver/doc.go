@@ -4,4 +4,4 @@
 //go:generate mdatagen metadata.yaml
 
 // Package kafkareceiver receives traces from Kafka.
-package signozkafkareceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver"
+package signozkafkareceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"

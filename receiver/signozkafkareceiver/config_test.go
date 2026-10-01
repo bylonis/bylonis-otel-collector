@@ -15,8 +15,8 @@ import (
 	"go.opentelemetry.io/collector/confmap/confmaptest"
 	"go.opentelemetry.io/collector/confmap/xconfmap"
 
-	"github.com/SigNoz/signoz-otel-collector/internal/kafka"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/internal/kafka"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver/internal/metadata"
 )
 
 func TestLoadConfig(t *testing.T) {

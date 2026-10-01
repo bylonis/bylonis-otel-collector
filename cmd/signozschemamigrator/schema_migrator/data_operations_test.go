@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SigNoz/signoz-otel-collector/constants"
+	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/stretchr/testify/require"
 )
 

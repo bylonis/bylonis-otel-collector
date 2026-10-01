@@ -20,7 +20,7 @@ import (
 	"go.opentelemetry.io/collector/confmap/xconfmap"
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
 
-	"github.com/SigNoz/signoz-otel-collector/exporter/signozkafkaexporter/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/exporter/signozkafkaexporter/internal/metadata"
 )
 
 func TestLoadConfig(t *testing.T) {

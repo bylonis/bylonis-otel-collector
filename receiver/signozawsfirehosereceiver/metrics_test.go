@@ -23,10 +23,10 @@ import (
 	"go.opentelemetry.io/collector/receiver/receivertest"
 	"go.uber.org/zap"
 
-	"github.com/SigNoz/signoz-otel-collector/pkg/pdatagen/pmetricsgen"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/metadata"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/unmarshalertest"
+	"github.com/bylonis/bylonis-otel-collector/pkg/pdatagen/pmetricsgen"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/unmarshalertest"
 )
 
 type recordConsumer struct {

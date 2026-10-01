@@ -12,7 +12,7 @@ import (
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
-	"github.com/SigNoz/signoz-otel-collector/exporter/metadataexporter/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/exporter/metadataexporter/internal/metadata"
 )
 
 const (

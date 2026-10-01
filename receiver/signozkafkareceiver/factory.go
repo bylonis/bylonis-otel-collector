@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package signozkafkareceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver"
+package signozkafkareceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/receiver"
 
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver/internal/metadata"
 )
 
 const (

@@ -21,10 +21,10 @@ import (
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.uber.org/zap"
 
-	"github.com/SigNoz/signoz-otel-collector/internal/coreinternal/testdata"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver"
+	"github.com/bylonis/bylonis-otel-collector/internal/coreinternal/testdata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"
 
-	"github.com/SigNoz/signoz-otel-collector/exporter/signozkafkaexporter/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/exporter/signozkafkaexporter/internal/metadata"
 )
 
 func TestNewExporter_err_version(t *testing.T) {

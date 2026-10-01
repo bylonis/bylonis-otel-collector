@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/SigNoz/signoz-otel-collector/signozcol"
+	"github.com/bylonis/bylonis-otel-collector/signozcol"
 	"go.opentelemetry.io/collector/otelcol"
 	"go.uber.org/zap"
 )

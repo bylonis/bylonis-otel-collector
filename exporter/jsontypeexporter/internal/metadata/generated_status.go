@@ -8,7 +8,7 @@ import (
 
 var (
 	Type      = component.MustNewType("signozjsontypeexporter")
-	ScopeName = "github.com/SigNoz/signoz-otel-collector/exporter/jsontypeexporter"
+	ScopeName = "github.com/bylonis/bylonis-otel-collector/exporter/jsontypeexporter"
 )
 
 const (

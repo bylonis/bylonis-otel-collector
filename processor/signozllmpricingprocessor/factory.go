@@ -1,4 +1,4 @@
-package signozllmpricingprocessor // import "github.com/SigNoz/signoz-otel-collector/processor/signozllmpricingprocessor"
+package signozllmpricingprocessor // import "github.com/bylonis/bylonis-otel-collector/processor/signozllmpricingprocessor"
 
 import (
 	"context"

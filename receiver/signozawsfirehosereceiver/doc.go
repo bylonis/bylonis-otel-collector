@@ -13,4 +13,4 @@
 
 //go:generate mdatagen metadata.yaml
 
-package signozawsfirehosereceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver"
+package signozawsfirehosereceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver"

@@ -7,4 +7,4 @@
 // Further details on how the SASL connector works can be viewed here:
 //
 //	https://github.com/aws/aws-msk-iam-auth#details
-package awsmsk // import "github.com/SigNoz/signoz-otel-collector/exporter/signozkafkaexporter/internal/awsmsk"
+package awsmsk // import "github.com/bylonis/bylonis-otel-collector/exporter/signozkafkaexporter/internal/awsmsk"

@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/SigNoz/signoz-otel-collector/cmd/signozotelcollector/config"
-	schemamigrator "github.com/SigNoz/signoz-otel-collector/cmd/signozschemamigrator/schema_migrator"
-	"github.com/SigNoz/signoz-otel-collector/constants"
+	"github.com/bylonis/bylonis-otel-collector/cmd/signozotelcollector/config"
+	schemamigrator "github.com/bylonis/bylonis-otel-collector/cmd/signozschemamigrator/schema_migrator"
+	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
