@@ -1,0 +1,23 @@
+ByLonis OpenTelemetry Collector
+Copyright 2026 ByLonis
+
+This project is a fork of SigNoz OpenTelemetry Collector
+(https://github.com/SigNoz/signoz-otel-collector), taken at tag v0.144.5
+(commit 75e04c080a6ffe51d02a8285ac1ea09429a0737d), which is licensed under the
+GNU Affero General Public License v3.0. This fork remains under the same
+license; see LICENSE.
+
+Some components are derived from the OpenTelemetry Collector and
+OpenTelemetry Collector Contrib projects
+(https://github.com/open-telemetry/opentelemetry-collector,
+https://github.com/open-telemetry/opentelemetry-collector-contrib) and keep
+their original Apache License 2.0 headers, among them:
+
+  - exporter/clickhouselogsexporter
+  - exporter/clickhousetracesexporter
+  - extension/healthcheckextension
+  - processor/signozspanmetricsprocessor
+  - processor/signoztailsampler
+
+The grok parser (pkg/parser/grok) is derived from github.com/vjeantet/grok,
+licensed under the Apache License 2.0.
