@@ -1,6 +1,6 @@
 # AWS Kinesis Data Firehose Receiver
 
-A fork of awsfirehosereceiver for powering AWS integration in SigNoz deployments. This fork will be upgraded independently from the general upstream updates of signoz-otel-collector.
+A fork of awsfirehosereceiver for powering AWS integration in SigNoz deployments. This fork will be upgraded independently from the general upstream updates of bylonis-otel-collector.
 
 awsfirehosereceiver is a receiver for ingesting AWS Kinesis Data Firehose delivery stream messages and parsing the records received based on the configured record type.
 

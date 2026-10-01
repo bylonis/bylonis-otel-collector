@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
-	schema_migrator "github.com/bylonis/bylonis-otel-collector/cmd/signozschemamigrator/schema_migrator"
+	schema_migrator "github.com/bylonis/bylonis-otel-collector/cmd/bylonisschemamigrator/schema_migrator"
 	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -34,7 +34,7 @@ func getLogger() *zap.Logger {
 
 func main() {
 	cmd := &cobra.Command{
-		Use:   "signoz-schema-migrator",
+		Use:   "bylonis-schema-migrator",
 		Short: "Signoz Schema Migrator",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			v := viper.New()

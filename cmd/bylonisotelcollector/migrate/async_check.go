@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
-	"github.com/bylonis/bylonis-otel-collector/cmd/signozotelcollector/config"
-	schemamigrator "github.com/bylonis/bylonis-otel-collector/cmd/signozschemamigrator/schema_migrator"
+	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
+	schemamigrator "github.com/bylonis/bylonis-otel-collector/cmd/bylonisschemamigrator/schema_migrator"
 	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/spf13/cobra"

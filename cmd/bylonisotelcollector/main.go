@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bylonis/bylonis-otel-collector/cmd/signozotelcollector/config"
-	"github.com/bylonis/bylonis-otel-collector/cmd/signozotelcollector/migrate"
+	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
+	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/migrate"
 	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/bylonis/bylonis-otel-collector/service"
 	"github.com/bylonis/bylonis-otel-collector/signozcol"
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	rootCmd := &cobra.Command{
-		Use: "signoz-otel-collector",
+		Use: "bylonis-otel-collector",
 		CompletionOptions: cobra.CompletionOptions{
 			DisableDefaultCmd: true,
 		},
