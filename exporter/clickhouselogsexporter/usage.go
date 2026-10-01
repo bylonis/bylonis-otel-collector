@@ -26,25 +26,25 @@ var (
 	// Measures for usage
 	ExporterSigNozSentLogRecords = stats.Int64(
 		SigNozSentLogRecordsKey,
-		"Number of signoz log records successfully sent to destination.",
+		"Number of log records successfully sent to destination.",
 		stats.UnitDimensionless)
 	ExporterSigNozSentLogRecordsBytes = stats.Int64(
 		SigNozSentLogRecordsBytesKey,
-		"Total size of signoz log records successfully sent to destination.",
+		"Total size of log records successfully sent to destination.",
 		stats.UnitDimensionless)
 
 	// Views for usage
 	LogsCountView = &view.View{
 		Name:        SigNozLogsCount,
 		Measure:     ExporterSigNozSentLogRecords,
-		Description: "The number of logs exported to signoz",
+		Description: "The number of logs exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
 	}
 	LogsSizeView = &view.View{
 		Name:        SigNozLogsBytes,
 		Measure:     ExporterSigNozSentLogRecordsBytes,
-		Description: "The size of logs exported to signoz",
+		Description: "The size of logs exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
 	}

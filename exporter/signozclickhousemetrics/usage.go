@@ -22,25 +22,25 @@ var (
 	// Measures for usage
 	ExporterSigNozSentMetricPoints = stats.Int64(
 		SigNozSentMetricPointsKey,
-		"Number of signoz metric points successfully sent to destination.",
+		"Number of metric points successfully sent to destination.",
 		stats.UnitDimensionless)
 	ExporterSigNozSentMetricPointsBytes = stats.Int64(
 		SigNozSentMetricPointsBytesKey,
-		"Total size of signoz metric points successfully sent to destination.",
+		"Total size of metric points successfully sent to destination.",
 		stats.UnitDimensionless)
 
 	// Views for usage
 	MetricPointsCountView = &view.View{
 		Name:        SigNozMetricPointsCount,
 		Measure:     ExporterSigNozSentMetricPoints,
-		Description: "The number of metric points exported to signoz",
+		Description: "The number of metric points exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
 	}
 	MetricPointsBytesView = &view.View{
 		Name:        SigNozMetricPointsBytes,
 		Measure:     ExporterSigNozSentMetricPointsBytes,
-		Description: "The size of metric points exported to signoz",
+		Description: "The size of metric points exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
 	}
