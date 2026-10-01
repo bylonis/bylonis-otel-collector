@@ -28,10 +28,10 @@ fail=0
 while read -r count file; do
 	allowed=$(awk -v f="$file" '$2 == f { print $1 }' "$baseline")
 	if [[ -z $allowed ]]; then
-		echo "::error file=$file::new file with $count signoz reference(s)"
+		echo "::error file=$file::$file: new file with $count signoz reference(s)"
 		fail=1
 	elif ((count > allowed)); then
-		echo "::error file=$file::signoz references grew from $allowed to $count"
+		echo "::error file=$file::$file: signoz references grew from $allowed to $count"
 		fail=1
 	fi
 done < <(current)

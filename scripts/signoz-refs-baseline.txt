@@ -125,6 +125,7 @@
 1 extension/healthcheckextension/internal/metadata/generated_status.go
 1 extension/healthcheckextension/metadata.yaml
 5 extension/healthcheckextension/testdata/config.yaml
+2 .github/workflows/ci.yaml
 1 .gitignore
 5 NOTICE
 2 opamp/client.go
