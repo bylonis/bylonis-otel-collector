@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
@@ -16,8 +15,6 @@ import (
 	"github.com/bylonis/bylonis-otel-collector/service"
 	"github.com/bylonis/bylonis-otel-collector/signozcol"
 	"github.com/spf13/cobra"
-	flag "github.com/spf13/pflag"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -34,23 +31,8 @@ func main() {
 			DisableDefaultCmd: true,
 		},
 		SilenceUsage: true,
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			v := viper.New()
-
-			v.SetEnvPrefix("signoz-otel-collector")
-			v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-			v.AutomaticEnv()
-
-			cmd.Flags().VisitAll(func(f *flag.Flag) {
-				configName := f.Name
-				if !f.Changed && v.IsSet(configName) {
-					val := v.Get(configName)
-					err := cmd.Flags().Set(f.Name, fmt.Sprintf("%v", val))
-					if err != nil {
-						panic(err)
-					}
-				}
-			})
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			return setFlagsFromEnv(cmd.Flags(), os.LookupEnv, logger)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			collectorConfig := config.Collector.Config
