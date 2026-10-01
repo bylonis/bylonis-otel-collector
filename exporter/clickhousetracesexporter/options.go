@@ -16,6 +16,7 @@ package clickhousetracesexporter
 
 import (
 	"fmt"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"time"
 
 	driver "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
@@ -50,7 +51,7 @@ func WithNewUsageCollector(id uuid.UUID, db driver.Conn, logger *zap.Logger) Tra
 			usage.Options{
 				ReportingInterval: usage.DefaultCollectionInterval,
 			},
-			"signoz_traces",
+			dbprefix.Traces(),
 			UsageExporter,
 			logger,
 		)

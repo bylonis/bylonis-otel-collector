@@ -2,6 +2,7 @@ package clickhouselogsexporter
 
 import (
 	"fmt"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 
 	driver "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	"github.com/bylonis/bylonis-otel-collector/usage"
@@ -33,7 +34,7 @@ func WithNewUsageCollector(id uuid.UUID, db driver.Conn) LogExporterOption {
 			usage.Options{
 				ReportingInterval: usage.DefaultCollectionInterval,
 			},
-			"signoz_logs",
+			dbprefix.Logs(),
 			UsageExporter,
 			e.logger,
 		)

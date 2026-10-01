@@ -12,6 +12,7 @@ import (
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/bylonis/bylonis-otel-collector/constants"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/cenkalti/backoff/v4"
 	"go.uber.org/zap"
 )
@@ -29,13 +30,14 @@ var (
 	ErrDistributionQueueError           = errors.New("distribution_queue has entries with error_count != 0 or is_blocked = 1")
 
 	legacyMigrationsTable = "schema_migrations"
-	SignozLogsDB          = "signoz_logs"
-	SignozMetricsDB       = "signoz_metrics"
-	SignozTracesDB        = "signoz_traces"
-	SignozMetadataDB      = "signoz_metadata"
-	SignozAnalyticsDB     = "signoz_analytics"
-	SignozMeterDB         = "signoz_meter"
-	Databases             = []string{SignozTracesDB, SignozMetricsDB, SignozLogsDB, SignozMetadataDB, SignozAnalyticsDB, SignozMeterDB}
+	// database names follow BYLONIS_DB_PREFIX (default "signoz")
+	SignozLogsDB      = dbprefix.Logs()
+	SignozMetricsDB   = dbprefix.Metrics()
+	SignozTracesDB    = dbprefix.Traces()
+	SignozMetadataDB  = dbprefix.Metadata()
+	SignozAnalyticsDB = dbprefix.Analytics()
+	SignozMeterDB     = dbprefix.Meter()
+	Databases         = []string{SignozTracesDB, SignozMetricsDB, SignozLogsDB, SignozMetadataDB, SignozAnalyticsDB, SignozMeterDB}
 
 	InProgressStatus = "in-progress"
 	FinishedStatus   = "finished"
@@ -403,7 +405,7 @@ func (m *MigrationManager) HostAddrs() ([]string, error) {
 			m.logger.Info("Connecting to new host", zap.String("host", hostAddr))
 			opts := m.connOpts
 			opts.Addr = []string{hostAddr}
-			conn, err := clickhouse.Open(&opts)
+			conn, err := dbprefix.Open(&opts)
 			if err != nil {
 				return nil, errors.Join(ErrFailedToGetConn, err)
 			}
@@ -447,7 +449,7 @@ func (m *MigrationManager) getConn(hostAddr string) (clickhouse.Conn, error) {
 	}
 	opts := m.connOpts
 	opts.Addr = []string{hostAddr}
-	conn, err := clickhouse.Open(&opts)
+	conn, err := dbprefix.Open(&opts)
 	if err != nil {
 		return nil, err
 	}

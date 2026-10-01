@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/google/uuid"
 	"github.com/jellydator/ttlcache/v3"
 	"go.opentelemetry.io/collector/component"
@@ -131,7 +132,7 @@ func newClickhouseClient(ctx context.Context, cfg *Config) (clickhouse.Conn, err
 		options.MaxIdleConns = maxIdleConnections
 		options.MaxOpenConns = maxIdleConnections + 5
 	}
-	db, err := clickhouse.Open(options)
+	db, err := dbprefix.Open(options)
 	if err != nil {
 		return nil, err
 	}

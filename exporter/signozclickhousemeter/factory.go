@@ -3,6 +3,7 @@ package signozclickhousemeter
 import (
 	"context"
 	"errors"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 
 	internalmetadata "github.com/bylonis/bylonis-otel-collector/exporter/signozclickhousemeter/internal/metadata"
 	"go.opentelemetry.io/collector/component"
@@ -55,7 +56,7 @@ func createDefaultConfig() component.Config {
 		BackOffConfig:    configretry.NewDefaultBackOffConfig(),
 		QueueBatchConfig: configoptional.Some(exporterhelper.NewDefaultQueueConfig()),
 		DSN:              "tcp://localhost:9000",
-		Database:         "signoz_meter",
+		Database:         dbprefix.Meter(),
 		SamplesTable:     "distributed_samples",
 	}
 }

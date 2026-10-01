@@ -17,6 +17,7 @@ package clickhouselogsexporter
 import (
 	"context"
 	"fmt"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"time"
 
 	"github.com/google/uuid"
@@ -31,9 +32,8 @@ import (
 	"github.com/bylonis/bylonis-otel-collector/utils"
 )
 
-const (
-	databaseName = "signoz_logs"
-)
+// databaseName follows BYLONIS_DB_PREFIX.
+var databaseName = dbprefix.Logs()
 
 // NewFactory creates a factory for Elastic exporter.
 func NewFactory() exporter.Factory {
