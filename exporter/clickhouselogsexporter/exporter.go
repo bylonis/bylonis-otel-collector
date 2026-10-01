@@ -30,6 +30,7 @@ import (
 	driver "github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	"github.com/bylonis/bylonis-otel-collector/constants"
 	"github.com/bylonis/bylonis-otel-collector/internal/common"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/bylonis/bylonis-otel-collector/pkg/keycheck"
 	"github.com/bylonis/bylonis-otel-collector/usage"
 	"github.com/bylonis/bylonis-otel-collector/utils"
@@ -1049,7 +1050,7 @@ func newClickhouseClient(_ *zap.Logger, cfg *Config) (clickhouse.Conn, error) {
 		options.MaxOpenConns = maxIdleConnections + 5
 	}
 
-	db, err := clickhouse.Open(options)
+	db, err := dbprefix.Open(options)
 	if err != nil {
 		return nil, err
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
 	schemamigrator "github.com/bylonis/bylonis-otel-collector/cmd/bylonisschemamigrator/schema_migrator"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -49,7 +50,7 @@ func newBootstrap(dsn string, cluster string, replication bool, timeout time.Dur
 		return nil, err
 	}
 
-	conn, err := clickhouse.Open(opts)
+	conn, err := dbprefix.Open(opts)
 	if err != nil {
 		return nil, err
 	}

@@ -8,6 +8,7 @@ import (
 
 	clickhouse "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/bylonis/bylonis-otel-collector/utils"
 	"github.com/bylonis/bylonis-otel-collector/utils/fingerprint"
 	"github.com/bylonis/bylonis-otel-collector/utils/flatten"
@@ -94,7 +95,7 @@ func newMetadataExporter(ctx context.Context, cfg Config, set exporter.Settings)
 	if err != nil {
 		return nil, err
 	}
-	conn, err := clickhouse.Open(opts)
+	conn, err := dbprefix.Open(opts)
 	if err != nil {
 		return nil, err
 	}
