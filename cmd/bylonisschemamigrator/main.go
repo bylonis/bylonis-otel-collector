@@ -36,7 +36,7 @@ func getLogger() *zap.Logger {
 func main() {
 	cmd := &cobra.Command{
 		Use:   "bylonis-schema-migrator",
-		Short: "Signoz Schema Migrator",
+		Short: "ByLonis Schema Migrator",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			v := viper.New()
 
