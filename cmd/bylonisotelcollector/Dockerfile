@@ -1,3 +1,21 @@
+# syntax=docker/dockerfile:1
+
+# build on the runner's platform and cross-compile: the binary is pure Go (CGO off)
+FROM --platform=$BUILDPLATFORM golang:1.25-bookworm AS build
+
+ARG TARGETOS TARGETARCH
+ARG VERSION=dev
+
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
+
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -trimpath \
+    -ldflags "-s -w -X github.com/bylonis/bylonis-otel-collector/constants.Version=${VERSION}" \
+    -o /out/bylonis-otel-collector ./cmd/bylonisotelcollector
+
 # use a minimal debian image
 FROM debian:bookworm-slim
 
@@ -9,14 +27,13 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 RUN ln -s /bylonis-otel-collector /signoz-otel-collector
 
 # define arguments and default values
-ARG TARGETOS TARGETARCH
 ARG USER_UID=10001
 
 # create a non-root user for running the collector
 USER ${USER_UID}
 
-# copy the binaries from the multi-stage build
-COPY .build/${TARGETOS}-${TARGETARCH}/bylonis-otel-collector /bylonis-otel-collector
+# copy the binary from the build stage
+COPY --from=build /out/bylonis-otel-collector /bylonis-otel-collector
 
 # copy the config file
 COPY conf/default.yaml /etc/otel/config.yaml
