@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package signozawsfirehosereceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver"
+package signozawsfirehosereceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver"
 
 import (
 	"errors"

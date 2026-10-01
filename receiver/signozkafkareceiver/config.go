@@ -1,14 +1,14 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package signozkafkareceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver"
+package signozkafkareceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"
 
 import (
 	"time"
 
 	"go.opentelemetry.io/collector/component"
 
-	"github.com/SigNoz/signoz-otel-collector/internal/kafka"
+	"github.com/bylonis/bylonis-otel-collector/internal/kafka"
 )
 
 type AutoCommit struct {

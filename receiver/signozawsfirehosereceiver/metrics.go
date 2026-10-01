@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package signozawsfirehosereceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver"
+package signozawsfirehosereceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver"
 
 import (
 	"context"
@@ -12,10 +12,10 @@ import (
 	"go.opentelemetry.io/collector/receiver/receiverhelper"
 	"google.golang.org/grpc/codes"
 
-	"github.com/SigNoz/signoz-otel-collector/config/configrouter"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/metadata"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler"
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/cwmetricstream"
+	"github.com/bylonis/bylonis-otel-collector/config/configrouter"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/cwmetricstream"
 )
 
 const defaultMetricsRecordType = cwmetricstream.TypeStr

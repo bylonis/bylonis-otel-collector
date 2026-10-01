@@ -5,4 +5,4 @@
 
 // package signoztransformprocessor contains the logic to execute telemetry transform based
 // on the OpenTelemetry Transformation Language.
-package signoztransformprocessor // import "github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor"
+package signoztransformprocessor // import "github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor"

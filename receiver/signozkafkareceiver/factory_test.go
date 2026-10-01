@@ -16,7 +16,7 @@ import (
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.opentelemetry.io/collector/receiver/receivertest"
 
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver/internal/metadata"
 )
 
 func TestCreateDefaultConfig(t *testing.T) {

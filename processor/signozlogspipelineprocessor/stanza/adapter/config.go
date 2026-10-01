@@ -1,7 +1,7 @@
 package signozlogspipelinestanzaadapter
 
 import (
-	signozlogspipelinestanzaoperator "github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/stanza/operator"
+	signozlogspipelinestanzaoperator "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator"
 )
 
 type BaseConfig struct {

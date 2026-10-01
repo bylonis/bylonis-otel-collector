@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package traces // import "github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/internal/traces"
+package traces // import "github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/internal/traces"
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
-	"github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/internal/common"
+	"github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/internal/common"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl"
 )
 

@@ -12,12 +12,12 @@ import (
 
 	"github.com/goccy/go-json"
 
-	tracesschema "github.com/SigNoz/signoz-otel-collector/pkg/schema/traces"
-	"github.com/SigNoz/signoz-otel-collector/pkg/metering"
-	"github.com/SigNoz/signoz-otel-collector/usage"
-	"github.com/SigNoz/signoz-otel-collector/utils"
-	"github.com/SigNoz/signoz-otel-collector/utils/fingerprint"
-	"github.com/SigNoz/signoz-otel-collector/utils/flatten"
+	tracesschema "github.com/bylonis/bylonis-otel-collector/pkg/schema/traces"
+	"github.com/bylonis/bylonis-otel-collector/pkg/metering"
+	"github.com/bylonis/bylonis-otel-collector/usage"
+	"github.com/bylonis/bylonis-otel-collector/utils"
+	"github.com/bylonis/bylonis-otel-collector/utils/fingerprint"
+	"github.com/bylonis/bylonis-otel-collector/utils/flatten"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/ptrace"

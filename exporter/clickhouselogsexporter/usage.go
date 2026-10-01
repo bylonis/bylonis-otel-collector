@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/SigNoz/signoz-otel-collector/pkg/metering"
-	"github.com/SigNoz/signoz-otel-collector/usage"
+	"github.com/bylonis/bylonis-otel-collector/pkg/metering"
+	"github.com/bylonis/bylonis-otel-collector/usage"
 	"github.com/goccy/go-json"
 	"github.com/google/uuid"
 	"go.opencensus.io/metric/metricdata"

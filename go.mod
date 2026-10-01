@@ -1,4 +1,4 @@
-module github.com/SigNoz/signoz-otel-collector
+module github.com/bylonis/bylonis-otel-collector
 
 go 1.25.0
 
@@ -888,10 +888,10 @@ require (
 )
 
 replace (
-	github.com/ClickHouse/ch-go v0.66.0 => github.com/SigNoz/ch-go v0.66.0-dd-sketch
-	github.com/ClickHouse/clickhouse-go/v2 v2.36.0 => github.com/SigNoz/clickhouse-go/v2 v2.36.0-dd-sketch
-	github.com/segmentio/ksuid => github.com/signoz/ksuid v1.0.4
-	github.com/vjeantet/grok => github.com/signoz/grok v1.0.3
+	github.com/ClickHouse/ch-go v0.66.0 => github.com/bylonis/ch-go v0.66.0-dd-sketch
+	github.com/ClickHouse/clickhouse-go/v2 v2.36.0 => github.com/bylonis/clickhouse-go/v2 v2.36.0-dd-sketch
+	github.com/segmentio/ksuid => github.com/bylonis/ksuid v1.0.4-bylonis.1
+	github.com/vjeantet/grok => github.com/bylonis/grok v1.0.3
 
 	// using 0.23.0 as there is an issue with 0.24.0 stats that results in
 	// an error

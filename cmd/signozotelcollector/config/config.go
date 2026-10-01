@@ -3,7 +3,7 @@ package config
 import (
 	"time"
 
-	signozcolFeatureGate "github.com/SigNoz/signoz-otel-collector/featuregate"
+	signozcolFeatureGate "github.com/bylonis/bylonis-otel-collector/featuregate"
 	"github.com/spf13/cobra"
 	otelcolFeatureGate "go.opentelemetry.io/collector/featuregate"
 )

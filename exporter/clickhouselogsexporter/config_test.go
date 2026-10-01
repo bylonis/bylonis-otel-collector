@@ -27,8 +27,8 @@ import (
 	"go.opentelemetry.io/collector/exporter/exporterhelper"
 	"go.opentelemetry.io/collector/otelcol/otelcoltest"
 
-	"github.com/SigNoz/signoz-otel-collector/exporter/clickhouselogsexporter/internal/metadata"
-	"github.com/SigNoz/signoz-otel-collector/utils"
+	"github.com/bylonis/bylonis-otel-collector/exporter/clickhouselogsexporter/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/utils"
 )
 
 func TestLoadConfig(t *testing.T) {

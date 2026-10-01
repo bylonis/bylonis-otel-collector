@@ -8,8 +8,8 @@ import (
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.uber.org/zap"
 
-	"github.com/SigNoz/signoz-otel-collector/pkg/pdatagen/plogsgen"
-	"github.com/SigNoz/signoz-otel-collector/utils"
+	"github.com/bylonis/bylonis-otel-collector/pkg/pdatagen/plogsgen"
+	"github.com/bylonis/bylonis-otel-collector/utils"
 	lru "github.com/hashicorp/golang-lru/v2"
 	mockhouse "github.com/srikanthccv/ClickHouse-go-mock"
 )

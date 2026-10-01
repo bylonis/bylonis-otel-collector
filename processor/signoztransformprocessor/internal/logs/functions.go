@@ -1,12 +1,12 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package logs // import "github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/internal/logs"
+package logs // import "github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/internal/logs"
 
 import (
 	"fmt"
 
-	signozFuncs "github.com/SigNoz/signoz-otel-collector/processor/signoztransformprocessor/ottlfunctions"
+	signozFuncs "github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor/ottlfunctions"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/contexts/ottllog"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/ottl/ottlfuncs"

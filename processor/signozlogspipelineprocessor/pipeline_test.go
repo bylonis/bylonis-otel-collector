@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/internal/metadata"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/consumer/consumertest"
 	"go.opentelemetry.io/collector/pdata/plog"

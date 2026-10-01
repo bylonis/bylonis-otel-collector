@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package signozkafkareceiver // import "github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver"
+package signozkafkareceiver // import "github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"
 import (
 	"errors"
 	"time"
@@ -9,7 +9,7 @@ import (
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/plog"
 
-	"github.com/SigNoz/signoz-otel-collector/internal/coreinternal/textutils"
+	"github.com/bylonis/bylonis-otel-collector/internal/coreinternal/textutils"
 )
 
 type textLogsUnmarshaler struct {

@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package otlpmetricstream // import "github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/otlpmetricstream"
+package otlpmetricstream // import "github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler/otlpmetricstream"
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 	"go.opentelemetry.io/collector/pdata/pmetric/pmetricotlp"
 	"go.uber.org/zap"
 
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver/internal/unmarshaler"
 )
 
 const (

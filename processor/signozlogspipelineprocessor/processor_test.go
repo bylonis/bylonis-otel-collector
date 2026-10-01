@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/SigNoz/signoz-otel-collector/processor/signozlogspipelineprocessor/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/internal/metadata"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/pdatatest/plogtest"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/component"

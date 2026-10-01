@@ -31,7 +31,7 @@ import (
 	"github.com/open-telemetry/opentelemetry-collector-contrib/exporter/prometheusexporter"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/jaegerreceiver"
 
-	"github.com/SigNoz/signoz-otel-collector/processor/signozspanmetricsprocessor/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor/internal/metadata"
 )
 
 func TestLoadConfig(t *testing.T) {

@@ -12,7 +12,7 @@ import (
 	"github.com/IBM/sarama"
 	"go.opentelemetry.io/collector/config/configtls"
 
-	"github.com/SigNoz/signoz-otel-collector/internal/kafka/awsmsk"
+	"github.com/bylonis/bylonis-otel-collector/internal/kafka/awsmsk"
 )
 
 // Authentication defines authentication.

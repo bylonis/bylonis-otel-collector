@@ -27,11 +27,11 @@ import (
 	"go.uber.org/zap/zapcore"
 	"go.uber.org/zap/zaptest/observer"
 
-	"github.com/SigNoz/signoz-otel-collector/internal/coreinternal/testdata"
-	"github.com/SigNoz/signoz-otel-collector/internal/coreinternal/textutils"
-	"github.com/SigNoz/signoz-otel-collector/internal/kafka"
+	"github.com/bylonis/bylonis-otel-collector/internal/coreinternal/testdata"
+	"github.com/bylonis/bylonis-otel-collector/internal/coreinternal/textutils"
+	"github.com/bylonis/bylonis-otel-collector/internal/kafka"
 
-	"github.com/SigNoz/signoz-otel-collector/receiver/signozkafkareceiver/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver/internal/metadata"
 )
 
 func TestNewTracesReceiver_version_err(t *testing.T) {

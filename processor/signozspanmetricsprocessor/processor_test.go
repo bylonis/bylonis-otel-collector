@@ -46,9 +46,9 @@ import (
 	"go.uber.org/zap/zaptest/observer"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/SigNoz/signoz-otel-collector/processor/signozspanmetricsprocessor/internal/cache"
-	genmetadata "github.com/SigNoz/signoz-otel-collector/processor/signozspanmetricsprocessor/internal/metadata"
-	"github.com/SigNoz/signoz-otel-collector/processor/signozspanmetricsprocessor/mocks"
+	"github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor/internal/cache"
+	genmetadata "github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor/internal/metadata"
+	"github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor/mocks"
 )
 
 const (
