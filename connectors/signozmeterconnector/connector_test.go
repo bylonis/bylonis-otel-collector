@@ -2,6 +2,7 @@ package signozmeterconnector
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -429,4 +430,27 @@ func TestCollectLogMeterMetrics(t *testing.T) {
 	assert.Equal(t, metricNameLogsSize, metric.Name())
 	assert.Equal(t, "By", metric.Unit())
 	assert.Equal(t, int64(590), metric.Sum().DataPoints().At(0).IntValue())
+}
+
+func TestBuildMetricsLegacyNames(t *testing.T) {
+	for _, legacy := range []bool{false, true} {
+		t.Run(fmt.Sprintf("legacy_metric_names=%v", legacy), func(t *testing.T) {
+			connector, err := newConnector(zaptest.NewLogger(t), connectortest.NewNopSettings(typ), &Config{Dimensions: []Dimension{{Name: "resource.0"}}, MetricsFlushInterval: time.Second, LegacyMetricNames: legacy})
+			require.NoError(t, err)
+			connector.aggregateMeterMetricsFromLogs(plogsgen.Generate(plogsgen.WithLogRecordCount(10), plogsgen.WithResourceAttributeStringValue("unknown_service")))
+
+			metrics := connector.buildMetrics().ResourceMetrics().At(0).ScopeMetrics().At(0).Metrics()
+			var names []string
+			for i := 0; i < metrics.Len(); i++ {
+				names = append(names, metrics.At(i).Name())
+			}
+			want := []string{"bylonis.meter.log.count", "bylonis.meter.log.size"}
+			if legacy {
+				want = append(want, "signoz.meter.log.count", "signoz.meter.log.size")
+				assert.Equal(t, int64(10), metrics.At(2).Sum().DataPoints().At(0).IntValue())
+				assert.Equal(t, map[string]any{"resource.0": "unknown_service"}, metrics.At(2).Sum().DataPoints().At(0).Attributes().AsRaw())
+			}
+			assert.Equal(t, want, names)
+		})
+	}
 }

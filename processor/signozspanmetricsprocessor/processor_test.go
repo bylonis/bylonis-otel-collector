@@ -327,6 +327,72 @@ func TestProcessorConsumeTraces(t *testing.T) {
 	}
 }
 
+func TestBuildMetricsLegacyNames(t *testing.T) {
+	bylonisNames := []string{
+		"bylonis_calls_total", "bylonis_latency",
+		"bylonis_external_call_latency_sum", "bylonis_external_call_latency_count",
+		"bylonis_db_latency_sum", "bylonis_db_latency_count",
+		"bylonis_latency", // exponential histogram, always present
+	}
+	legacyNames := []string{
+		"signoz_calls_total", "signoz_latency",
+		"signoz_external_call_latency_sum", "signoz_external_call_latency_count",
+		"signoz_db_latency_sum", "signoz_db_latency_count",
+		"signoz_latency",
+	}
+	for _, legacy := range []bool{false, true} {
+		t.Run(fmt.Sprintf("legacy_metric_names=%v", legacy), func(t *testing.T) {
+			mexp := &mocks.MetricsExporter{}
+			mexp.On("ConsumeMetrics", mock.Anything, mock.Anything).Return(nil)
+			tcon := &mocks.TracesConsumer{}
+			tcon.On("ConsumeTraces", mock.Anything, mock.Anything).Return(nil)
+			defaultNullValue := pcommon.NewValueStr("defaultNullValue")
+			p := newProcessorImp(mexp, tcon, &defaultNullValue, delta, zaptest.NewLogger(t), []ExcludePattern{})
+			p.instanceID = "collector-1"
+			p.config.LegacyMetricNames = legacy
+
+			require.NoError(t, p.ConsumeTraces(context.Background(), buildSampleTrace()))
+			m, err := p.buildMetrics()
+			require.NoError(t, err)
+
+			ms := m.ResourceMetrics().At(0).ScopeMetrics().At(0).Metrics()
+			var names []string
+			for i := 0; i < ms.Len(); i++ {
+				names = append(names, ms.At(i).Name())
+			}
+			want := bylonisNames
+			if legacy {
+				want = append(append([]string{}, bylonisNames...), legacyNames...)
+			}
+			assert.Equal(t, want, names)
+
+			// bylonis_* carry bylonis.collector.id; the signoz_* copies, the
+			// signoz.collector.id they always had.
+			for i := 0; i < ms.Len(); i++ {
+				if ms.At(i).Type() != pmetric.MetricTypeSum {
+					continue
+				}
+				attrs := ms.At(i).Sum().DataPoints()
+				if attrs.Len() == 0 {
+					continue
+				}
+				a := attrs.At(0).Attributes()
+				key, other := "bylonis.collector.id", "signoz.collector.id"
+				if strings.HasPrefix(ms.At(i).Name(), "signoz_") {
+					key, other = other, key
+				}
+				v, ok := a.Get(key)
+				assert.True(t, ok, ms.At(i).Name())
+				assert.Equal(t, "collector-1", v.Str())
+				_, ok = a.Get(other)
+				assert.False(t, ok, ms.At(i).Name())
+				_, ok = a.Get("resource_" + key)
+				assert.True(t, ok, ms.At(i).Name())
+			}
+		})
+	}
+}
+
 func TestAggregateMetricsDoesNotMutateSpans(t *testing.T) {
 	mexp := &mocks.MetricsExporter{}
 	tcon := &mocks.TracesConsumer{}
@@ -338,8 +404,8 @@ func TestAggregateMetricsDoesNotMutateSpans(t *testing.T) {
 
 	rss := traces.ResourceSpans()
 	for i := 0; i < rss.Len(); i++ {
-		_, found := rss.At(i).Resource().Attributes().Get(signozID)
-		assert.False(t, found, "%s must not be set on spans", signozID)
+		_, found := rss.At(i).Resource().Attributes().Get(collectorID)
+		assert.False(t, found, "%s must not be set on spans", collectorID)
 	}
 }
 
@@ -580,13 +646,13 @@ func verifyConsumeMetricsInput(t testing.TB, input pmetric.Metrics, expectedTemp
 	assert.Equal(t, "signozspanmetricsprocessor", ilm.At(0).Scope().Name())
 
 	m := ilm.At(0).Metrics()
-	// 6 metrics: signoz_calls_total, signoz_latency, signoz_db_latency_sum
-	// signoz_db_latency_count, signoz_external_latency_sum, signoz_external_latency_count
+	// 6 metrics: bylonis_calls_total, bylonis_latency, bylonis_db_latency_sum
+	// bylonis_db_latency_count, bylonis_external_latency_sum, bylonis_external_latency_count
 	require.Equal(t, 6, m.Len())
 
 	seenMetricIDs := make(map[metricID]bool)
 	// The first 3 data points are for call counts.
-	assert.Equal(t, "signoz_calls_total", m.At(0).Name())
+	assert.Equal(t, "bylonis_calls_total", m.At(0).Name())
 	assert.Equal(t, expectedTemporality, m.At(0).Sum().AggregationTemporality())
 	assert.True(t, m.At(0).Sum().IsMonotonic())
 	callsDps := m.At(0).Sum().DataPoints()
@@ -601,7 +667,7 @@ func verifyConsumeMetricsInput(t testing.TB, input pmetric.Metrics, expectedTemp
 
 	seenMetricIDs = make(map[metricID]bool)
 	// The remaining 3 data points are for latency.
-	assert.Equal(t, "signoz_latency", m.At(1).Name())
+	assert.Equal(t, "bylonis_latency", m.At(1).Name())
 	assert.Equal(t, "ms", m.At(1).Unit())
 	assert.Equal(t, expectedTemporality, m.At(1).Histogram().AggregationTemporality())
 	latencyDps := m.At(1).Histogram().DataPoints()
@@ -817,12 +883,12 @@ func TestBuildDimensionKVsTagsCollectorID(t *testing.T) {
 
 	dims := p.buildDimensionKVs("svc", ptrace.NewSpan(), nil, pcommon.NewMap())
 
-	v, ok := dims.Get(signozID)
-	require.True(t, ok, "%s must be present as a label", signozID)
+	v, ok := dims.Get(collectorID)
+	require.True(t, ok, "%s must be present as a label", collectorID)
 	assert.Equal(t, testID, v.Str())
 
-	rv, ok := dims.Get(resourcePrefix + signozID)
-	require.True(t, ok, "%s%s must be present as a label", resourcePrefix, signozID)
+	rv, ok := dims.Get(resourcePrefix + collectorID)
+	require.True(t, ok, "%s%s must be present as a label", resourcePrefix, collectorID)
 	assert.Equal(t, testID, rv.Str())
 }
 
@@ -900,10 +966,10 @@ func TestBuildKeyWithDimensions(t *testing.T) {
 		{
 			name: "resource attribute contains instance ID",
 			optionalDims: []dimension{
-				{name: signozID},
+				{name: collectorID},
 			},
 			resourceAttrMap: map[string]interface{}{
-				signozID: testID,
+				collectorID: testID,
 			},
 			wantKey: "ab\u0000c\u0000SPAN_KIND_UNSPECIFIED\u0000STATUS_CODE_UNSET\u0000test-instance-id",
 		},

@@ -98,6 +98,12 @@ type Config struct {
 	// Spans with start time older than now - SkipSpansOlderThan are skipped.
 	// Default is 24 hours if not set.
 	SkipSpansOlderThan time.Duration `mapstructure:"skip_spans_older_than"`
+
+	// LegacyMetricNames also emits every metric under its SigNoz name
+	// (signoz_latency, signoz_calls_total…, with signoz.collector.id) next to the
+	// bylonis one, for dashboards, alerts and UIs that still query the old names.
+	// Default true while they move to the new names (bylonis/bylonis#47).
+	LegacyMetricNames bool `mapstructure:"legacy_metric_names"`
 }
 
 // GetAggregationTemporality converts the string value given in the config into a AggregationTemporality.

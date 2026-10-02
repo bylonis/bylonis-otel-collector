@@ -15,6 +15,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.uber.org/zap"
 
+	"github.com/bylonis/bylonis-otel-collector/pkg/legacynames"
 	"github.com/bylonis/bylonis-otel-collector/pkg/metering"
 	v1 "github.com/bylonis/bylonis-otel-collector/pkg/metering/v1"
 	"github.com/google/uuid"
@@ -179,6 +180,10 @@ func (meterconnector *meterConnector) buildMetrics() pmetric.Metrics {
 		meterconnector.collectLogMeterMetrics(scopeMetrics, meterMetrics, timestamp)
 		meterconnector.collectTraceMeterMetrics(scopeMetrics, meterMetrics, timestamp)
 		meterconnector.collectMetricMeterMetrics(scopeMetrics, meterMetrics, timestamp)
+
+		if meterconnector.config.LegacyMetricNames {
+			legacynames.AppendLegacyCopies(scopeMetrics.Metrics())
+		}
 	}
 
 	return metrics

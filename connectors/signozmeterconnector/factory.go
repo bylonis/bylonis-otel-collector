@@ -41,6 +41,7 @@ func createDefaultConfig() component.Config {
 			},
 		},
 		MetricsFlushInterval: defaultMetricsFlushInterval,
+		LegacyMetricNames:    true,
 	}
 }
 

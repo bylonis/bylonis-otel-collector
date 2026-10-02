@@ -8,19 +8,19 @@ import (
 // metric definitions for different telemetry signals
 // naming based on the convention specified here - https://opentelemetry.io/docs/specs/semconv/general/naming/#metrics
 const (
-	metricNameSpansCount = "signoz.meter.span.count"
+	metricNameSpansCount = "bylonis.meter.span.count"
 	metricDescSpansCount = "The number of spans observed."
-	metricNameSpansSize  = "signoz.meter.span.size"
+	metricNameSpansSize  = "bylonis.meter.span.size"
 	metricDescSpansSize  = "The size of spans observed."
 
-	metricNameMetricsDataPointsCount = "signoz.meter.metric.datapoint.count"
+	metricNameMetricsDataPointsCount = "bylonis.meter.metric.datapoint.count"
 	metricDescMetricsDataPointsCount = "The number of data points observed."
-	metricNameMetricsDataPointsSize  = "signoz.meter.metric.datapoint.size"
+	metricNameMetricsDataPointsSize  = "bylonis.meter.metric.datapoint.size"
 	metricDescMetricsDataPointsSize  = "The size of data points observed."
 
-	metricNameLogsCount = "signoz.meter.log.count"
+	metricNameLogsCount = "bylonis.meter.log.count"
 	metricDescLogsCount = "The number of log records observed."
-	metricNameLogsSize  = "signoz.meter.log.size"
+	metricNameLogsSize  = "bylonis.meter.log.size"
 	metricDescLogsSize  = "The size of log records observed."
 )
 
@@ -31,6 +31,12 @@ type Config struct {
 
 	// MetricsEmitInterval is the time period between when metrics are flushed or emitted to the configured MetricsExporter.
 	MetricsFlushInterval time.Duration `mapstructure:"metrics_flush_interval"`
+
+	// LegacyMetricNames also emits every meter metric under its SigNoz name
+	// (signoz.meter.span.count…) next to the bylonis one, for the UIs and
+	// alerts that still query the old names. Default true while they move to
+	// the new names (bylonis/bylonis#47).
+	LegacyMetricNames bool `mapstructure:"legacy_metric_names"`
 
 	// prevent unkeyed literal initialization
 	_ struct{}

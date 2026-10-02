@@ -46,6 +46,7 @@ func TestLoadConfig(t *testing.T) {
 		wantMetricsFlushInterval           time.Duration
 		wantMaxServicesToTrack             int
 		wantMaxOperationsToTrackPerService int
+		wantLegacyMetricNames              bool
 	}{
 		{
 			configFile:                         "config-2-pipelines.yaml",
@@ -55,6 +56,7 @@ func TestLoadConfig(t *testing.T) {
 			wantMetricsFlushInterval:           30 * time.Second,
 			wantMaxServicesToTrack:             256,
 			wantMaxOperationsToTrackPerService: 2048,
+			wantLegacyMetricNames:              true,
 		},
 		{
 			configFile:                         "config-3-pipelines.yaml",
@@ -64,6 +66,7 @@ func TestLoadConfig(t *testing.T) {
 			wantMetricsFlushInterval:           60 * time.Second,
 			wantMaxServicesToTrack:             256,
 			wantMaxOperationsToTrackPerService: 2048,
+			wantLegacyMetricNames:              true,
 		},
 		{
 			configFile:          "config-full.yaml",
@@ -86,6 +89,7 @@ func TestLoadConfig(t *testing.T) {
 			wantMetricsFlushInterval:           60 * time.Second,
 			wantMaxServicesToTrack:             512,
 			wantMaxOperationsToTrackPerService: 69420,
+			wantLegacyMetricNames:              false,
 		},
 	}
 	for _, tc := range testcases {
@@ -119,6 +123,7 @@ func TestLoadConfig(t *testing.T) {
 					MetricsFlushInterval:           tc.wantMetricsFlushInterval,
 					MaxServicesToTrack:             tc.wantMaxServicesToTrack,
 					MaxOperationsToTrackPerService: tc.wantMaxOperationsToTrackPerService,
+					LegacyMetricNames:              tc.wantLegacyMetricNames,
 				},
 				cfg.Processors[component.NewID(metadata.Type)],
 			)
