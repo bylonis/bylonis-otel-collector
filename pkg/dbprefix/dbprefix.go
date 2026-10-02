@@ -1,12 +1,14 @@
 // Package dbprefix makes the prefix of the ClickHouse database names
-// configurable. Upstream hardcodes signoz_traces, signoz_metrics, signoz_logs,
-// signoz_meter, signoz_metadata and signoz_analytics, both as Go constants and
-// inside hundreds of SQL strings (schema migrations, exporters).
+// configurable. The code names the databases bylonis_traces, bylonis_metrics,
+// bylonis_logs, bylonis_meter, bylonis_metadata and bylonis_analytics, both as
+// Go constants and inside hundreds of SQL strings (schema migrations,
+// exporters). Upstream SigNoz calls them signoz_<db>.
 //
 // The prefix comes from the BYLONIS_DB_PREFIX env var and defaults to
-// "signoz", which keeps the upstream names and behaviour unchanged. With any
-// other prefix, connections opened with Open rewrite the legacy names in every
-// statement and string argument, so the SQL literals don't need to change.
+// "bylonis". Connections opened with Open rewrite both the bylonis_<db> and the
+// legacy signoz_<db> names in every statement and string argument to the
+// configured prefix. That keeps SQL saved with the upstream names working, and
+// BYLONIS_DB_PREFIX=signoz serves installs whose databases were never renamed.
 package dbprefix
 
 import (
@@ -19,8 +21,10 @@ import (
 const (
 	// EnvVar is the env var that sets the prefix.
 	EnvVar = "BYLONIS_DB_PREFIX"
-	// Default keeps the upstream database names.
-	Default = "signoz"
+	// Default is the prefix of the database names in the code.
+	Default = "bylonis"
+	// Legacy is the upstream SigNoz prefix, still accepted in SQL.
+	Legacy = "signoz"
 )
 
 // suffixes are the database names after "<prefix>_".
@@ -28,7 +32,7 @@ var suffixes = []string{"traces", "metrics", "logs", "meter", "metadata", "analy
 
 var (
 	validPrefix = regexp.MustCompile(`^[a-z][a-z0-9_]{0,31}$`)
-	legacyNames = regexp.MustCompile(`\b` + Default + `_(` + strings.Join(suffixes, "|") + `)\b`)
+	knownNames  = regexp.MustCompile(`\b(?:` + Default + `|` + Legacy + `)_(` + strings.Join(suffixes, "|") + `)\b`)
 
 	prefix = mustLoad(os.LookupEnv)
 )
@@ -55,8 +59,8 @@ func mustLoad(lookup func(string) (string, bool)) string {
 // Prefix returns the configured prefix.
 func Prefix() string { return prefix }
 
-// IsDefault reports whether the prefix is the upstream one, in which case no
-// rewriting happens.
+// IsDefault reports whether the prefix is the one the code uses. Even then,
+// legacy signoz_<db> names are rewritten.
 func IsDefault() bool { return prefix == Default }
 
 func name(suffix string) string { return prefix + "_" + suffix }
@@ -69,16 +73,17 @@ func Meter() string     { return name("meter") }
 func Metadata() string  { return name("metadata") }
 func Analytics() string { return name("analytics") }
 
-// Rewrite replaces the legacy signoz_<db> names in s with the configured
-// prefix. Table names such as signoz_index_v3 or signoz_logs_v2 are left alone:
-// only whole words matching a database name change.
+// Rewrite replaces the bylonis_<db> and legacy signoz_<db> names in s with the
+// configured prefix. Table names such as signoz_index_v3 or signoz_logs_v2 are
+// left alone: only whole words matching a database name change.
 func Rewrite(s string) string {
 	return rewriteWith(prefix, s)
 }
 
 func rewriteWith(p, s string) string {
-	if p == Default || !strings.Contains(s, Default+"_") {
+	// Fast path: nothing to rewrite unless s holds a name with another prefix.
+	if !strings.Contains(s, Legacy+"_") && (p == Default || !strings.Contains(s, Default+"_")) {
 		return s
 	}
-	return legacyNames.ReplaceAllString(s, p+"_$1")
+	return knownNames.ReplaceAllString(s, p+"_$1")
 }
