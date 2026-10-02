@@ -13,7 +13,7 @@ import (
 )
 
 // attributeMetadataWriter writes resource+attribute fingerprint records to
-// signoz_metadata.distributed_attributes_metadata.
+// bylonis_metadata.distributed_attributes_metadata.
 type attributeMetadataWriter struct {
 	conn   driver.Conn
 	logger *zap.Logger

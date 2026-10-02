@@ -108,9 +108,9 @@ extensions:
     size_mib: 1000
 exporters:
   clickhousetraces:
-    datasource: tcp://signoz-host:9000/?database=signoz_traces
+    datasource: tcp://signoz-host:9000/?database=bylonis_traces
   signozclickhousemetrics:
-    dsn: tcp://signoz-host:9000/signoz_metrics
+    dsn: tcp://signoz-host:9000/bylonis_metrics
   clickhouselogsexporter:
     dsn: tcp://signoz-host:9000
     timeout: 10s

@@ -261,7 +261,7 @@ func (m *MigrationManager) ShouldRunSquashedV2(ctx context.Context, db string) (
 
 func (m *MigrationManager) runCustomRetentionMigrationsForLogs(ctx context.Context) error {
 	m.logger.Info("Checking if should run squashed migrations for logs")
-	should, err := m.shouldRunSquashed(ctx, "signoz_logs")
+	should, err := m.shouldRunSquashed(ctx, "bylonis_logs")
 	if err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func (m *MigrationManager) runCustomRetentionMigrationsForLogs(ctx context.Conte
 	m.logger.Info("Running custom retention migrations for logs")
 	for _, migration := range CustomRetentionLogsMigrations {
 		for _, item := range migration.UpItems {
-			if err := m.RunOperation(ctx, item, migration.MigrationID, "signoz_logs", false); err != nil {
+			if err := m.RunOperation(ctx, item, migration.MigrationID, "bylonis_logs", false); err != nil {
 				return err
 			}
 		}
@@ -285,7 +285,7 @@ func (m *MigrationManager) runCustomRetentionMigrationsForLogs(ctx context.Conte
 //nolint:unused
 func (m *MigrationManager) runSquashedMigrationsForLogs(ctx context.Context) error {
 	m.logger.Info("Checking if should run squashed migrations for logs")
-	should, err := m.shouldRunSquashed(ctx, "signoz_logs")
+	should, err := m.shouldRunSquashed(ctx, "bylonis_logs")
 	if err != nil {
 		return err
 	}
@@ -297,7 +297,7 @@ func (m *MigrationManager) runSquashedMigrationsForLogs(ctx context.Context) err
 	m.logger.Info("Running squashed migrations for logs")
 	for _, migration := range SquashedLogsMigrations {
 		for _, item := range migration.UpItems {
-			if err := m.RunOperation(ctx, item, migration.MigrationID, "signoz_logs", false); err != nil {
+			if err := m.RunOperation(ctx, item, migration.MigrationID, "bylonis_logs", false); err != nil {
 				return err
 			}
 		}

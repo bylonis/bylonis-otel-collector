@@ -7,11 +7,11 @@ import (
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 )
 
-// Open is clickhouse.Open for code that uses the database names: with a
-// non-default prefix it points the connection's default database at the new
-// name and returns a connection that rewrites legacy names on the fly.
+// Open is clickhouse.Open for code that uses the database names: it points the
+// connection's default database at the configured prefix and returns a
+// connection that rewrites database names on the fly.
 func Open(opts *clickhouse.Options) (driver.Conn, error) {
-	if !IsDefault() && opts != nil {
+	if opts != nil {
 		opts.Auth.Database = Rewrite(opts.Auth.Database)
 	}
 	conn, err := clickhouse.Open(opts)
@@ -21,12 +21,10 @@ func Open(opts *clickhouse.Options) (driver.Conn, error) {
 	return Wrap(conn), nil
 }
 
-// Wrap returns conn unchanged for the default prefix, and otherwise a
-// connection that rewrites legacy database names in queries and string args.
+// Wrap returns a connection that rewrites database names in queries and string
+// args to the configured prefix. It always wraps: even with the default prefix,
+// SQL saved with the legacy signoz_<db> names must keep working.
 func Wrap(conn driver.Conn) driver.Conn {
-	if IsDefault() {
-		return conn
-	}
 	return &rewritingConn{Conn: conn, prefix: prefix}
 }
 
