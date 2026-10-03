@@ -32,6 +32,7 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				MetricsFlushInterval: time.Hour * 1,
+				LegacyMetricNames:    true,
 			},
 		},
 		{
@@ -49,6 +50,7 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				MetricsFlushInterval: time.Hour * 1,
+				LegacyMetricNames:    true,
 			},
 		},
 		{
@@ -66,6 +68,7 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				MetricsFlushInterval: time.Minute * 1,
+				LegacyMetricNames:    true,
 			},
 		},
 	}

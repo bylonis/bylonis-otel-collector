@@ -39,6 +39,7 @@ import (
 	conventions "go.opentelemetry.io/collector/semconv/v1.6.1"
 	"go.uber.org/zap"
 
+	"github.com/bylonis/bylonis-otel-collector/pkg/legacynames"
 	"github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor/internal/cache"
 )
 
@@ -52,7 +53,7 @@ const (
 	metricKeySeparator      = string(byte(0))
 	traceIDKey              = "trace_id"
 
-	signozID = "signoz.collector.id"
+	collectorID = legacynames.CollectorIDKey
 
 	defaultDimensionsCacheSize = 1000
 	resourcePrefix             = "resource_"
@@ -148,28 +149,28 @@ type processorImp struct {
 	tracesConsumer  consumer.Traces
 
 	// Additional dimensions to add to metrics.
-	dimensions             []dimension // signoz_latency metric
-	expDimensions          []dimension // signoz_latency exphisto metric
-	callDimensions         []dimension // signoz_calls_total metric
-	dbCallDimensions       []dimension // signoz_db_latency_* metric
-	externalCallDimensions []dimension // signoz_external_call_latency_* metric
+	dimensions             []dimension // bylonis_latency metric
+	expDimensions          []dimension // bylonis_latency exphisto metric
+	callDimensions         []dimension // bylonis_calls_total metric
+	dbCallDimensions       []dimension // bylonis_db_latency_* metric
+	externalCallDimensions []dimension // bylonis_external_call_latency_* metric
 
 	// The starting time of the data points.
 	startTimestamp pcommon.Timestamp
 
 	// Histogram.
-	histograms    map[metricKey]*histogramData // signoz_latency metric
+	histograms    map[metricKey]*histogramData // bylonis_latency metric
 	latencyBounds []float64
 
 	expHistograms map[metricKey]*exponentialHistogram
 
-	callHistograms    map[metricKey]*histogramData // signoz_calls_total metric
+	callHistograms    map[metricKey]*histogramData // bylonis_calls_total metric
 	callLatencyBounds []float64
 
-	dbCallHistograms    map[metricKey]*histogramData // signoz_db_latency_* metric
+	dbCallHistograms    map[metricKey]*histogramData // bylonis_db_latency_* metric
 	dbCallLatencyBounds []float64
 
-	externalCallHistograms    map[metricKey]*histogramData // signoz_external_call_latency_* metric
+	externalCallHistograms    map[metricKey]*histogramData // bylonis_external_call_latency_* metric
 	externalCallLatencyBounds []float64
 
 	keyBuf *bytes.Buffer
@@ -580,6 +581,10 @@ func (p *processorImp) buildMetrics() (pmetric.Metrics, error) {
 		return pmetric.Metrics{}, err
 	}
 
+	if p.config.LegacyMetricNames {
+		legacynames.AppendLegacyCopies(ilm.Metrics())
+	}
+
 	p.metricKeyToDimensions.RemoveEvictedItems()
 	p.expHistogramKeyToDimensions.RemoveEvictedItems()
 	p.callMetricKeyToDimensions.RemoveEvictedItems()
@@ -637,7 +642,7 @@ func (p *processorImp) logCardinalityInfo() {
 // into the given instrumentation library metrics.
 func (p *processorImp) collectLatencyMetrics(ilm pmetric.ScopeMetrics) error {
 	mLatency := ilm.Metrics().AppendEmpty()
-	mLatency.SetName("signoz_latency")
+	mLatency.SetName("bylonis_latency")
 	mLatency.SetUnit("ms")
 	mLatency.SetEmptyHistogram().SetAggregationTemporality(p.config.GetAggregationTemporality())
 	dps := mLatency.Histogram().DataPoints()
@@ -668,7 +673,7 @@ func (p *processorImp) collectLatencyMetrics(ilm pmetric.ScopeMetrics) error {
 // into the given instrumentation library metrics.
 func (p *processorImp) collectExpHistogramMetrics(ilm pmetric.ScopeMetrics) error {
 	mExpLatency := ilm.Metrics().AppendEmpty()
-	mExpLatency.SetName("signoz_latency")
+	mExpLatency.SetName("bylonis_latency")
 	mExpLatency.SetUnit("ms")
 	mExpLatency.SetEmptyExponentialHistogram().SetAggregationTemporality(p.config.GetAggregationTemporality())
 	dps := mExpLatency.ExponentialHistogram().DataPoints()
@@ -694,13 +699,13 @@ func (p *processorImp) collectExpHistogramMetrics(ilm pmetric.ScopeMetrics) erro
 // into the given instrumentation library metrics.
 func (p *processorImp) collectDBCallMetrics(ilm pmetric.ScopeMetrics) error {
 	mDBCallSum := ilm.Metrics().AppendEmpty()
-	mDBCallSum.SetName("signoz_db_latency_sum")
+	mDBCallSum.SetName("bylonis_db_latency_sum")
 	mDBCallSum.SetUnit("1")
 	mDBCallSum.SetEmptySum().SetIsMonotonic(true)
 	mDBCallSum.Sum().SetAggregationTemporality(p.config.GetAggregationTemporality())
 
 	mDBCallCount := ilm.Metrics().AppendEmpty()
-	mDBCallCount.SetName("signoz_db_latency_count")
+	mDBCallCount.SetName("bylonis_db_latency_count")
 	mDBCallCount.SetUnit("1")
 	mDBCallCount.SetEmptySum().SetIsMonotonic(true)
 	mDBCallCount.Sum().SetAggregationTemporality(p.config.GetAggregationTemporality())
@@ -736,13 +741,13 @@ func (p *processorImp) collectDBCallMetrics(ilm pmetric.ScopeMetrics) error {
 
 func (p *processorImp) collectExternalCallMetrics(ilm pmetric.ScopeMetrics) error {
 	mExternalCallSum := ilm.Metrics().AppendEmpty()
-	mExternalCallSum.SetName("signoz_external_call_latency_sum")
+	mExternalCallSum.SetName("bylonis_external_call_latency_sum")
 	mExternalCallSum.SetUnit("1")
 	mExternalCallSum.SetEmptySum().SetIsMonotonic(true)
 	mExternalCallSum.Sum().SetAggregationTemporality(p.config.GetAggregationTemporality())
 
 	mExternalCallCount := ilm.Metrics().AppendEmpty()
-	mExternalCallCount.SetName("signoz_external_call_latency_count")
+	mExternalCallCount.SetName("bylonis_external_call_latency_count")
 	mExternalCallCount.SetUnit("1")
 	mExternalCallCount.SetEmptySum().SetIsMonotonic(true)
 	mExternalCallCount.Sum().SetAggregationTemporality(p.config.GetAggregationTemporality())
@@ -780,7 +785,7 @@ func (p *processorImp) collectExternalCallMetrics(ilm pmetric.ScopeMetrics) erro
 // into the given instrumentation library metrics.
 func (p *processorImp) collectCallMetrics(ilm pmetric.ScopeMetrics) error {
 	mCalls := ilm.Metrics().AppendEmpty()
-	mCalls.SetName("signoz_calls_total")
+	mCalls.SetName("bylonis_calls_total")
 	mCalls.SetEmptySum().SetIsMonotonic(true)
 	mCalls.Sum().SetAggregationTemporality(p.config.GetAggregationTemporality())
 	dps := mCalls.Sum().DataPoints()
@@ -1187,11 +1192,11 @@ func (p *processorImp) buildDimensionKVs(serviceName string, span ptrace.Span, o
 	dims.PutStr(operationKey, spanName)
 	dims.PutStr(spanKindKey, SpanKindStr(span.Kind()))
 	dims.PutStr(statusCodeKey, StatusCodeStr(span.Status().Code()))
-	dims.PutStr(signozID, p.instanceID)
-	dims.PutStr(resourcePrefix+signozID, p.instanceID)
+	dims.PutStr(collectorID, p.instanceID)
+	dims.PutStr(resourcePrefix+collectorID, p.instanceID)
 	for _, d := range optionalDims {
 		// Already tagged above from the collector instance ID.
-		if d.name == signozID {
+		if d.name == collectorID || d.name == legacynames.LegacyCollectorIDKey {
 			continue
 		}
 		v, ok, foundInResource := getDimensionValueWithResource(d, span.Attributes(), resourceAttrs)
@@ -1220,11 +1225,11 @@ func (p *processorImp) buildCustomDimensionKVs(serviceName string, span ptrace.S
 		v.CopyTo(dims.PutEmpty(k))
 	}
 	dims.PutStr(statusCodeKey, StatusCodeStr(span.Status().Code()))
-	dims.PutStr(signozID, p.instanceID)
-	dims.PutStr(resourcePrefix+signozID, p.instanceID)
+	dims.PutStr(collectorID, p.instanceID)
+	dims.PutStr(resourcePrefix+collectorID, p.instanceID)
 	for _, d := range optionalDims {
 		// Already tagged above from the collector instance ID.
-		if d.name == signozID {
+		if d.name == collectorID || d.name == legacynames.LegacyCollectorIDKey {
 			continue
 		}
 		v, ok, foundInResource := getDimensionValueWithResource(d, span.Attributes(), resourceAttrs)
