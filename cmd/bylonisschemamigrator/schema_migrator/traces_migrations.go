@@ -1161,4 +1161,249 @@ var TracesMigrations = []SchemaMigrationRecord{
 			},
 		},
 	},
+	{
+		// bylonis/bylonis#108: the live trace tables lose the signoz_ prefix.
+		// Order matters: the materialized views stop firing as soon as their source
+		// is renamed, so they are re-pointed right after the rename, and the old
+		// distributed names are re-pointed last. Until then inserts into them fail
+		// and the exporter retries them, instead of the views missing rows silently.
+		// distributed_signoz_* stay as aliases until the backend and the exporter use
+		// the new names; a later migration drops them.
+		MigrationID: 1011,
+		UpItems: append(append([]Operation{
+			CreateTableAsOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_bylonis_index_v3",
+				AsTable:  "distributed_signoz_index_v3",
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "bylonis_index_v3",
+					ShardingKey: "cityHash64(trace_id)",
+				},
+			},
+			CreateTableAsOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_bylonis_error_index_v2",
+				AsTable:  "distributed_signoz_error_index_v2",
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "bylonis_error_index_v2",
+					ShardingKey: "cityHash64(groupID)",
+				},
+			},
+			RenameTableOperation{
+				Database: "bylonis_traces",
+				Table:    "signoz_index_v3",
+				NewTable: "bylonis_index_v3",
+			},
+		}, spanIndexV3MaterializedViews("bylonis_index_v3")...),
+			CreateTableAsOperation{
+				Database:  "bylonis_traces",
+				Table:     "distributed_signoz_index_v3",
+				AsTable:   "distributed_bylonis_index_v3",
+				OrReplace: true,
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "bylonis_index_v3",
+					ShardingKey: "cityHash64(trace_id)",
+				},
+			},
+			RenameTableOperation{
+				Database: "bylonis_traces",
+				Table:    "signoz_error_index_v2",
+				NewTable: "bylonis_error_index_v2",
+			},
+			CreateTableAsOperation{
+				Database:  "bylonis_traces",
+				Table:     "distributed_signoz_error_index_v2",
+				AsTable:   "distributed_bylonis_error_index_v2",
+				OrReplace: true,
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "bylonis_error_index_v2",
+					ShardingKey: "cityHash64(groupID)",
+				},
+			},
+		),
+		DownItems: append(append([]Operation{
+			RenameTableOperation{
+				Database: "bylonis_traces",
+				Table:    "bylonis_index_v3",
+				NewTable: "signoz_index_v3",
+			},
+		}, spanIndexV3MaterializedViews("signoz_index_v3")...),
+			CreateTableAsOperation{
+				Database:  "bylonis_traces",
+				Table:     "distributed_signoz_index_v3",
+				AsTable:   "distributed_bylonis_index_v3",
+				OrReplace: true,
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "signoz_index_v3",
+					ShardingKey: "cityHash64(trace_id)",
+				},
+			},
+			RenameTableOperation{
+				Database: "bylonis_traces",
+				Table:    "bylonis_error_index_v2",
+				NewTable: "signoz_error_index_v2",
+			},
+			CreateTableAsOperation{
+				Database:  "bylonis_traces",
+				Table:     "distributed_signoz_error_index_v2",
+				AsTable:   "distributed_bylonis_error_index_v2",
+				OrReplace: true,
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "signoz_error_index_v2",
+					ShardingKey: "cityHash64(groupID)",
+				},
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_bylonis_index_v3",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_bylonis_error_index_v2",
+			},
+		),
+	},
+	{
+		// bylonis/bylonis#108: drop the legacy v2 span tables. Nothing writes to them
+		// since the v3 schema; usage_explorer_mv was their last reader. The tables
+		// are empty in every tenant, so there is no down migration.
+		MigrationID: 1012,
+		UpItems: []Operation{
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "usage_explorer_mv",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_signoz_index_v2",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "signoz_index_v2",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_signoz_spans",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "signoz_spans",
+			},
+		},
+		DownItems: []Operation{},
+	},
+}
+
+// spanIndexV3MaterializedViews re-points the materialized views that read from the
+// span index (local table) at the given table name. The queries are the latest
+// versions from migrations 1000, 1002 and 1007.
+func spanIndexV3MaterializedViews(table string) []Operation {
+	src := "bylonis_traces." + table
+	return []Operation{
+		ModifyQueryMaterializedViewOperation{
+			Database: "bylonis_traces",
+			ViewName: "trace_summary_mv",
+			Query: `SELECT
+						trace_id,
+						min(timestamp) AS start,
+						max(timestamp) AS end,
+						toUInt64(count()) AS num_spans
+					FROM ` + src + `
+					GROUP BY trace_id;`,
+		},
+		ModifyQueryMaterializedViewOperation{
+			Database: "bylonis_traces",
+			ViewName: "root_operations",
+			Query: `SELECT DISTINCT
+						name,
+						resource_string_service$$name as serviceName
+					FROM ` + src + `
+					WHERE parent_span_id = ''`,
+		},
+		ModifyQueryMaterializedViewOperation{
+			Database: "bylonis_traces",
+			ViewName: "sub_root_operations",
+			Query: `SELECT DISTINCT
+						name,
+						resource_string_service$$name AS serviceName
+					FROM ` + src + ` AS A, ` + src + ` AS B
+					WHERE (A.resource_string_service$$name != B.resource_string_service$$name) AND (A.parent_span_id = B.span_id) AND B.span_id != '' AND A.span_id != ''`,
+		},
+		ModifyQueryMaterializedViewOperation{
+			Database: "bylonis_traces",
+			ViewName: "dependency_graph_minutes_db_calls_mv_v2",
+			Query: `SELECT
+						resource_string_service$$name AS src,
+						attribute_string_db$$system AS dest,
+						quantilesState(0.5, 0.75, 0.9, 0.95, 0.99)(toFloat64(duration_nano)) AS duration_quantiles_state,
+						countIf(status_code = 2) AS error_count,
+						count(*) AS total_count,
+						toStartOfMinute(timestamp) AS timestamp,
+						resources_string['deployment.environment'] AS deployment_environment,
+						resources_string['k8s.cluster.name'] AS k8s_cluster_name,
+						resources_string['k8s.namespace.name'] AS k8s_namespace_name
+					FROM ` + src + `
+					WHERE (dest != '') AND (kind != 2)
+					GROUP BY
+						timestamp,
+						src,
+						dest,
+						deployment_environment,
+						k8s_cluster_name,
+						k8s_namespace_name`,
+		},
+		ModifyQueryMaterializedViewOperation{
+			Database: "bylonis_traces",
+			ViewName: "dependency_graph_minutes_messaging_calls_mv_v2",
+			Query: `SELECT
+						resource_string_service$$name  AS src,
+						attribute_string_messaging$$system AS dest,
+						quantilesState(0.5, 0.75, 0.9, 0.95, 0.99)(toFloat64(duration_nano)) AS duration_quantiles_state,
+						countIf(status_code = 2) AS error_count,
+						count(*) AS total_count,
+						toStartOfMinute(timestamp) AS timestamp,
+						resources_string['deployment.environment'] AS deployment_environment,
+						resources_string['k8s.cluster.name'] AS k8s_cluster_name,
+						resources_string['k8s.namespace.name'] AS k8s_namespace_name
+					FROM ` + src + `
+					WHERE (dest != '') AND (kind != 2)
+					GROUP BY
+						timestamp,
+						src,
+						dest,
+						deployment_environment,
+						k8s_cluster_name,
+						k8s_namespace_name`,
+		},
+		ModifyQueryMaterializedViewOperation{
+			Database: "bylonis_traces",
+			ViewName: "dependency_graph_minutes_service_calls_mv_v2",
+			Query: `SELECT
+						A.resource_string_service$$name AS src,
+						B.resource_string_service$$name AS dest,
+						quantilesState(0.5, 0.75, 0.9, 0.95, 0.99)(toFloat64(B.duration_nano)) AS duration_quantiles_state,
+						countIf(B.status_code = 2) AS error_count,
+						count(*) AS total_count,
+						toStartOfMinute(B.timestamp) AS timestamp,
+						B.resources_string['deployment.environment'] AS deployment_environment,
+						B.resources_string['k8s.cluster.name'] AS k8s_cluster_name,
+						B.resources_string['k8s.namespace.name'] AS k8s_namespace_name
+					FROM ` + src + ` AS A, ` + src + ` AS B
+					WHERE (A.resource_string_service$$name != B.resource_string_service$$name) AND (A.span_id = B.parent_span_id)
+						AND B.span_id != '' AND A.span_id != ''
+					GROUP BY
+						timestamp,
+						src,
+						dest,
+						deployment_environment,
+						k8s_cluster_name,
+						k8s_namespace_name;`,
+		},
+	}
 }

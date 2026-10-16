@@ -13,8 +13,9 @@
 2 cmd/bylonisschemamigrator/schema_migrator/data_operations_test.go
 5 cmd/bylonisschemamigrator/schema_migrator/logs_migrations_v2.go
 58 cmd/bylonisschemamigrator/schema_migrator/manager.go
+2 cmd/bylonisschemamigrator/schema_migrator/rename_operations_test.go
 24 cmd/bylonisschemamigrator/schema_migrator/squashed_traces_migrations.go
-71 cmd/bylonisschemamigrator/schema_migrator/traces_migrations.go
+90 cmd/bylonisschemamigrator/schema_migrator/traces_migrations.go
 6 components/aliases.go
 11 components/aliases_test.go
 24 components/components.go
