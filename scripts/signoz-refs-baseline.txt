@@ -47,9 +47,8 @@
 3 exporter/clickhouselogsexporter/exporter.go
 7 exporter/clickhouselogsexporter/exporter_test.go
 19 exporter/clickhouselogsexporter/usage.go
-2 exporter/clickhousetracesexporter/clickhouse_exporter.go
 1 exporter/clickhousetracesexporter/clickhouse_exporter_v3.go
-5 exporter/clickhousetracesexporter/clickhouse_exporter_v3_test.go
+3 exporter/clickhousetracesexporter/clickhouse_exporter_v3_test.go
 18 exporter/clickhousetracesexporter/usage.go
 2 exporter/clickhousetracesexporter/writer.go
 1 exporter/jsontypeexporter/exporter.go
