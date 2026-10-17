@@ -1298,6 +1298,55 @@ var TracesMigrations = []SchemaMigrationRecord{
 		},
 		DownItems: []Operation{},
 	},
+	{
+		// bylonis/bylonis#108: drop the compatibility aliases kept by 1011 and the
+		// Usage Explorer tables. Since collector .4, backend rc.11 and MCP .6 nothing
+		// reads or writes the distributed_signoz_* names; usage_explorer lost its
+		// only writer (usage_explorer_mv) in 1012 and its reader (/api/v1/usage) in
+		// the backend. The down migration restores the aliases only: usage_explorer
+		// was always empty.
+		MigrationID: 1013,
+		UpItems: []Operation{
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_signoz_index_v3",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_signoz_error_index_v2",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_usage_explorer",
+			},
+			DropTableOperation{
+				Database: "bylonis_traces",
+				Table:    "usage_explorer",
+			},
+		},
+		DownItems: []Operation{
+			CreateTableAsOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_signoz_index_v3",
+				AsTable:  "distributed_bylonis_index_v3",
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "bylonis_index_v3",
+					ShardingKey: "cityHash64(trace_id)",
+				},
+			},
+			CreateTableAsOperation{
+				Database: "bylonis_traces",
+				Table:    "distributed_signoz_error_index_v2",
+				AsTable:  "distributed_bylonis_error_index_v2",
+				Engine: Distributed{
+					Database:    "bylonis_traces",
+					Table:       "bylonis_error_index_v2",
+					ShardingKey: "cityHash64(groupID)",
+				},
+			},
+		},
+	},
 }
 
 // spanIndexV3MaterializedViews re-points the materialized views that read from the
