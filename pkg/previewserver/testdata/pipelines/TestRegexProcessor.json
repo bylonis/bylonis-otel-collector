@@ -1,0 +1,139 @@
+{
+  "source": "bylonis/bylonis pkg/query-service/app/logparsingpipeline TestRegexProcessor (processors: testdata/preview/TestRegexProcessor.yaml)",
+  "cases": [
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-regex-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-regex-parser",
+                  "if": "body != nil && body matches \"PAN: (?P<pan>[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}) \"",
+                  "parse_from": "body",
+                  "parse_to": "attributes",
+                  "regex": "PAN: (?P<pan>[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}) ",
+                  "type": "regex_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341455736469355",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test string with PAN: GDTSJ4756E and some more text"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "38643564616631612d643962352d3433",
+                      "spanId": "3337346462663561"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341455736469355",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test string with PAN: GDTSJ4756E and some more text"
+                      },
+                      "attributes": [
+                        {
+                          "key": "pan",
+                          "value": {
+                            "stringValue": "GDTSJ4756E"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "38643564616631612d643962352d3433",
+                      "spanId": "3337346462663561"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    }
+  ]
+}

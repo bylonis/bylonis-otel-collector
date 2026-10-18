@@ -10,6 +10,7 @@ import (
 
 var (
 	Collector         collector
+	Preview           preview
 	Clickhouse        clickhouse
 	MigrateReady      migrateReady
 	MigrateBootstrap  migrateBootstrap
@@ -31,6 +32,18 @@ func (cfg *collector) RegisterFlags(cmd *cobra.Command) {
 	cmd.PersistentFlags().StringVar(&cfg.CopyPath, "copy-path", "/etc/otel/signozcol-config.yaml", "File path for the copied collector configuration")
 	cmd.PersistentFlags().Var(signozcolFeatureGate.NewFlag(otelcolFeatureGate.GlobalRegistry()), "feature-gates",
 		"Comma-delimited list of feature gate identifiers. Prefix with '-' to disable the feature. '+' or no prefix will enable the feature.")
+}
+
+type preview struct {
+	Listen string
+	Token  string
+}
+
+// RegisterFlags registers the flags of the logs pipelines preview server
+// (pkg/previewserver). They belong to the collector command only.
+func (cfg *preview) RegisterFlags(cmd *cobra.Command) {
+	cmd.Flags().StringVar(&cfg.Listen, "preview-listen", ":4319", "Address of the logs pipelines preview server, for the ByLonis backend (internal network only)")
+	cmd.Flags().StringVar(&cfg.Token, "preview-token", "", "Bearer token of the logs pipelines preview server; the server is off without it. Prefer the env var BYLONIS_OTEL_COLLECTOR_PREVIEW_TOKEN")
 }
 
 type clickhouse struct {
