@@ -3,6 +3,7 @@ package opamp
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"runtime"
 	"strings"
@@ -37,6 +38,7 @@ type serverClient struct {
 	opampClient           client.OpAMPClient
 	configManager         *agentConfigManager
 	managerConfig         AgentManagerConfig
+	token                 string
 	receivedInitialConfig []byte
 	runningNopConfig      atomic.Bool
 	instanceId            uuid.UUID
@@ -48,6 +50,10 @@ type NewServerClientOpts struct {
 	WrappedCollector *signozcol.WrappedCollector
 
 	CollectorConfigPath string
+
+	// Token is sent to the OpAMP server as "Authorization: Bearer <token>" when the
+	// WebSocket connection opens. Empty sends no header, for servers that do not check it.
+	Token string
 }
 
 // NewServerClient creates a new OpAmp client
@@ -67,6 +73,7 @@ func NewServerClient(args *NewServerClientOpts) (Client, error) {
 		logger:           clientLogger,
 		configManager:    configManager,
 		managerConfig:    *args.Config,
+		token:            args.Token,
 		runningNopConfig: atomic.Bool{},
 	}
 	svrClient.createInstanceId()
@@ -86,6 +93,15 @@ func NewServerClient(args *NewServerClientOpts) (Client, error) {
 	svrClient.opampClient = client.NewWebSocket(NewWrappedLogger(clientLogger.Sugar()))
 
 	return svrClient, nil
+}
+
+// authHeader returns the headers of the OpAMP connection: the bearer token when there is
+// one, none otherwise.
+func authHeader(token string) http.Header {
+	if token == "" {
+		return nil
+	}
+	return http.Header{"Authorization": []string{"Bearer " + token}}
 }
 
 func keyVal(key, val string) *protobufs.KeyValue {
@@ -132,8 +148,13 @@ func (s *serverClient) Start(ctx context.Context) error {
 		return err
 	}
 
+	if s.token == "" {
+		s.logger.Warn("no OpAMP token (BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN): connecting to the OpAMP server without authentication")
+	}
+
 	settings := types.StartSettings{
 		OpAMPServerURL: s.managerConfig.ServerEndpoint,
+		Header:         authHeader(s.token),
 		InstanceUid:    types.InstanceUid(s.instanceId),
 		Callbacks: types.Callbacks{
 			OnConnect: func(ctx context.Context) {

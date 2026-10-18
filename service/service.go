@@ -32,6 +32,7 @@ func New(
 	logger *zap.Logger,
 	managerConfigPath string,
 	collectorConfigPath string,
+	opampToken string,
 ) (*service, error) {
 
 	var client opamp.Client
@@ -51,6 +52,7 @@ func New(
 			Config:              managerConfig,
 			WrappedCollector:    wrappedCollector,
 			CollectorConfigPath: collectorConfigPath,
+			Token:               opampToken,
 		}
 		client, err = opamp.NewServerClient(serverClientOpts)
 		if err != nil {

@@ -23,12 +23,14 @@ type collector struct {
 	Config        string
 	ManagerConfig string
 	CopyPath      string
+	OpAMPToken    string
 }
 
 func (cfg *collector) RegisterFlags(cmd *cobra.Command) {
 	cmd.PersistentFlags().StringVar(&cfg.Config, "config", "", "File path for the collector configuration")
 	cmd.PersistentFlags().StringVar(&cfg.ManagerConfig, "manager-config", "", "File path for the agent manager configuration")
 	cmd.PersistentFlags().StringVar(&cfg.CopyPath, "copy-path", "/etc/otel/signozcol-config.yaml", "File path for the copied collector configuration")
+	cmd.PersistentFlags().StringVar(&cfg.OpAMPToken, "opamp-token", "", "Bearer token sent to the OpAMP server (Authorization header); none is sent without it. Prefer the env var BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN")
 	cmd.PersistentFlags().Var(signozcolFeatureGate.NewFlag(otelcolFeatureGate.GlobalRegistry()), "feature-gates",
 		"Comma-delimited list of feature gate identifiers. Prefix with '-' to disable the feature. '+' or no prefix will enable the feature.")
 }

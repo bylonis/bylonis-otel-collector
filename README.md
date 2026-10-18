@@ -41,6 +41,15 @@ Every flag can be set with an env var named `BYLONIS_OTEL_COLLECTOR_<FLAG>`
 collector. Apart from the database names, migrations, tables and queries don't
 change.
 
+### OpAMP token
+
+With `--manager-config`, the collector gets its config from the OpAMP server of
+the ByLonis backend (`server_endpoint`). Set `BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN`
+(`--opamp-token`) and the collector sends `Authorization: Bearer <token>` when it
+opens the WebSocket connection; the backend rejects connections without the
+token it expects (`BYLONIS_OPAMP_TOKEN`). Without it, no header is sent and the
+log says so with a warning.
+
 ### Compatibility with SigNoz deployments
 
 These keep working so an existing deployment can switch images without
