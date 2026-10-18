@@ -12,34 +12,34 @@ import (
 )
 
 const (
-	SigNozSentMetricPointsKey      = "singoz_sent_metric_points"
-	SigNozSentMetricPointsBytesKey = "singoz_sent_metric_points_bytes"
-	SigNozMetricPointsCount        = "signoz_metric_points_count"
-	SigNozMetricPointsBytes        = "signoz_metric_points_bytes"
+	BylonisSentMetricPointsKey      = "bylonis_sent_metric_points"
+	BylonisSentMetricPointsBytesKey = "bylonis_sent_metric_points_bytes"
+	BylonisMetricPointsCount        = "bylonis_metric_points_count"
+	BylonisMetricPointsBytes        = "bylonis_metric_points_bytes"
 )
 
 var (
 	// Measures for usage
-	ExporterSigNozSentMetricPoints = stats.Int64(
-		SigNozSentMetricPointsKey,
+	ExporterBylonisSentMetricPoints = stats.Int64(
+		BylonisSentMetricPointsKey,
 		"Number of metric points successfully sent to destination.",
 		stats.UnitDimensionless)
-	ExporterSigNozSentMetricPointsBytes = stats.Int64(
-		SigNozSentMetricPointsBytesKey,
+	ExporterBylonisSentMetricPointsBytes = stats.Int64(
+		BylonisSentMetricPointsBytesKey,
 		"Total size of metric points successfully sent to destination.",
 		stats.UnitDimensionless)
 
 	// Views for usage
 	MetricPointsCountView = &view.View{
-		Name:        SigNozMetricPointsCount,
-		Measure:     ExporterSigNozSentMetricPoints,
+		Name:        BylonisMetricPointsCount,
+		Measure:     ExporterBylonisSentMetricPoints,
 		Description: "The number of metric points exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
 	}
 	MetricPointsBytesView = &view.View{
-		Name:        SigNozMetricPointsBytes,
-		Measure:     ExporterSigNozSentMetricPointsBytes,
+		Name:        BylonisMetricPointsBytes,
+		Measure:     ExporterBylonisSentMetricPointsBytes,
 		Description: "The size of metric points exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
@@ -49,7 +49,7 @@ var (
 func UsageExporter(metrics []*metricdata.Metric, id uuid.UUID) (map[string]usage.Usage, error) {
 	data := map[string]usage.Usage{}
 	for _, metric := range metrics {
-		if !strings.Contains(metric.Descriptor.Name, SigNozMetricPointsCount) && !strings.Contains(metric.Descriptor.Name, SigNozMetricPointsBytes) {
+		if !strings.Contains(metric.Descriptor.Name, BylonisMetricPointsCount) && !strings.Contains(metric.Descriptor.Name, BylonisMetricPointsBytes) {
 			continue
 		}
 		exporterIndex := usage.GetIndexOfLabel(metric.Descriptor.LabelKeys, usage.ExporterIDKey)
@@ -57,7 +57,7 @@ func UsageExporter(metrics []*metricdata.Metric, id uuid.UUID) (map[string]usage
 		if exporterIndex == -1 || tenantIndex == -1 {
 			return nil, fmt.Errorf("usage: failed to get index of labels")
 		}
-		if strings.Contains(metric.Descriptor.Name, SigNozMetricPointsCount) {
+		if strings.Contains(metric.Descriptor.Name, BylonisMetricPointsCount) {
 			for _, v := range metric.TimeSeries {
 				if v.LabelValues[exporterIndex].Value != id.String() {
 					continue
@@ -72,7 +72,7 @@ func UsageExporter(metrics []*metricdata.Metric, id uuid.UUID) (map[string]usage
 					}
 				}
 			}
-		} else if strings.Contains(metric.Descriptor.Name, SigNozMetricPointsBytes) {
+		} else if strings.Contains(metric.Descriptor.Name, BylonisMetricPointsBytes) {
 			for _, v := range metric.TimeSeries {
 				if v.LabelValues[exporterIndex].Value != id.String() {
 					continue

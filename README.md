@@ -35,7 +35,7 @@ Every flag can be set with an env var named `BYLONIS_OTEL_COLLECTOR_<FLAG>`
 | `BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_DSN` | `tcp://0.0.0.0:9001` | ClickHouse used by `migrate` |
 | `BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER` | `cluster` | ClickHouse cluster name |
 | `BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION` | `true` | Replicated tables |
-| `BYLONIS_DB_PREFIX` | `signoz` | Prefix of the database names: `<prefix>_traces`, `_metrics`, `_logs`, `_meter`, `_metadata`, `_analytics` |
+| `BYLONIS_DB_PREFIX` | `bylonis` | Prefix of the database names: `<prefix>_traces`, `_metrics`, `_logs`, `_meter`, `_metadata`, `_analytics` |
 
 `BYLONIS_DB_PREFIX` must be set to the same value for the migrator and the
 collector. Apart from the database names, migrations, tables and queries don't
@@ -43,8 +43,8 @@ change.
 
 ### Compatibility with SigNoz deployments
 
-These keep working so an existing deployment can switch images without
-changing anything else. They are deprecated and will be removed in a later
+These keep working so an existing deployment can switch images; one whose
+databases still have the upstream names also sets `BYLONIS_DB_PREFIX=signoz`. They are deprecated and will be removed in a later
 release.
 
 - `SIGNOZ_OTEL_COLLECTOR_*` env vars are read when the `BYLONIS_` one is unset,
@@ -54,5 +54,5 @@ release.
   also available with `bylonis` in its place (`bylonislogspipeline`, ...).
 - The images include `/signoz-otel-collector` and `/signoz-schema-migrator` as
   symlinks to the new binaries.
-- With the default `BYLONIS_DB_PREFIX`, the databases are the upstream
-  `signoz_*` ones.
+- SQL that still names the upstream databases is rewritten to the configured
+  prefix.

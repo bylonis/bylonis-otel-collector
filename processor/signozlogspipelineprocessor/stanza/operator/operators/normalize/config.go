@@ -43,7 +43,7 @@ func (c Config) Build(set component.TelemetrySettings) (operator.Operator, error
 	}
 
 	logsProcessed, err := set.MeterProvider.Meter("github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/operators/normalize").Int64Counter(
-		"signoz_normalize_operator_logs_processed",
+		"bylonis_normalize_operator_logs_processed",
 		metric.WithDescription("Number of log entries processed by the normalize operator"),
 	)
 	if err != nil {

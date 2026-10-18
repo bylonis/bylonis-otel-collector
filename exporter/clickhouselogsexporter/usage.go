@@ -16,34 +16,34 @@ import (
 )
 
 const (
-	SigNozSentLogRecordsKey      = "singoz_sent_log_records"
-	SigNozSentLogRecordsBytesKey = "singoz_sent_log_records_bytes"
-	SigNozLogsCount              = "signoz_logs_count"
-	SigNozLogsBytes              = "signoz_logs_bytes"
+	BylonisSentLogRecordsKey      = "bylonis_sent_log_records"
+	BylonisSentLogRecordsBytesKey = "bylonis_sent_log_records_bytes"
+	BylonisLogsCount              = "bylonis_logs_count"
+	BylonisLogsBytes              = "bylonis_logs_bytes"
 )
 
 var (
 	// Measures for usage
-	ExporterSigNozSentLogRecords = stats.Int64(
-		SigNozSentLogRecordsKey,
+	ExporterBylonisSentLogRecords = stats.Int64(
+		BylonisSentLogRecordsKey,
 		"Number of log records successfully sent to destination.",
 		stats.UnitDimensionless)
-	ExporterSigNozSentLogRecordsBytes = stats.Int64(
-		SigNozSentLogRecordsBytesKey,
+	ExporterBylonisSentLogRecordsBytes = stats.Int64(
+		BylonisSentLogRecordsBytesKey,
 		"Total size of log records successfully sent to destination.",
 		stats.UnitDimensionless)
 
 	// Views for usage
 	LogsCountView = &view.View{
-		Name:        SigNozLogsCount,
-		Measure:     ExporterSigNozSentLogRecords,
+		Name:        BylonisLogsCount,
+		Measure:     ExporterBylonisSentLogRecords,
 		Description: "The number of logs exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
 	}
 	LogsSizeView = &view.View{
-		Name:        SigNozLogsBytes,
-		Measure:     ExporterSigNozSentLogRecordsBytes,
+		Name:        BylonisLogsBytes,
+		Measure:     ExporterBylonisSentLogRecordsBytes,
 		Description: "The size of logs exported to ByLonis",
 		Aggregation: view.Sum(),
 		TagKeys:     []tag.Key{usage.TagTenantKey, usage.TagExporterIdKey},
@@ -53,7 +53,7 @@ var (
 func UsageExporter(metrics []*metricdata.Metric, id uuid.UUID) (map[string]usage.Usage, error) {
 	data := map[string]usage.Usage{}
 	for _, metric := range metrics {
-		if !strings.Contains(metric.Descriptor.Name, SigNozLogsCount) && !strings.Contains(metric.Descriptor.Name, SigNozLogsBytes) {
+		if !strings.Contains(metric.Descriptor.Name, BylonisLogsCount) && !strings.Contains(metric.Descriptor.Name, BylonisLogsBytes) {
 			continue
 		}
 		exporterIndex := usage.GetIndexOfLabel(metric.Descriptor.LabelKeys, usage.ExporterIDKey)
@@ -62,7 +62,7 @@ func UsageExporter(metrics []*metricdata.Metric, id uuid.UUID) (map[string]usage
 			return nil, fmt.Errorf("usage: failed to get index of labels")
 		}
 
-		if strings.Contains(metric.Descriptor.Name, SigNozLogsCount) {
+		if strings.Contains(metric.Descriptor.Name, BylonisLogsCount) {
 			for _, v := range metric.TimeSeries {
 				if v.LabelValues[exporterIndex].Value != id.String() {
 					continue
@@ -77,7 +77,7 @@ func UsageExporter(metrics []*metricdata.Metric, id uuid.UUID) (map[string]usage
 					}
 				}
 			}
-		} else if strings.Contains(metric.Descriptor.Name, SigNozLogsBytes) {
+		} else if strings.Contains(metric.Descriptor.Name, BylonisLogsBytes) {
 			for _, v := range metric.TimeSeries {
 				if v.LabelValues[exporterIndex].Value != id.String() {
 					continue
