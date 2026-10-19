@@ -1,4 +1,4 @@
-# Signoz Schema Migrator
+# ByLonis Schema Migrator
 
 This is a tool to manage the ClickHouse schema migrations.
 

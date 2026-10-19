@@ -23,7 +23,8 @@ vendor/
 # build folder
 .build
 *.rollback
-signoz-collector
+/bylonis-otel-collector
+/bylonisotelcollector
 
 # tmp
 tmp/

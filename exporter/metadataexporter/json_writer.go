@@ -168,7 +168,7 @@ func newJSONMetadataWriter(
 		return nil, fmt.Errorf("failed to create cardinal key cache: %w", err)
 	}
 	logsProcessed, err := e.set.MeterProvider.Meter("github.com/bylonis/bylonis-otel-collector/exporter/metadataexporter").Int64Counter(
-		"signoz_metadata_exporter_json_logs_processed",
+		"bylonis_metadata_exporter_json_logs_processed",
 		metric.WithDescription("Number of log records with a JSON (map) body processed by the JSON metadata writer"),
 	)
 	if err != nil {

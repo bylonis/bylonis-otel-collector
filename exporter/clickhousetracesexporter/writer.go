@@ -488,7 +488,7 @@ func (w *SpanWriter) WriteBatchOfSpansV3(ctx context.Context, batch []*SpanV3, m
 	wg.Wait()
 
 	for k, v := range metrics {
-		err := stats.RecordWithTags(ctx, []tag.Mutator{tag.Upsert(usage.TagTenantKey, k), tag.Upsert(usage.TagExporterIdKey, w.exporterId.String())}, ExporterSigNozSentSpans.M(int64(v.Count)), ExporterSigNozSentSpansBytes.M(int64(v.Size)))
+		err := stats.RecordWithTags(ctx, []tag.Mutator{tag.Upsert(usage.TagTenantKey, k), tag.Upsert(usage.TagExporterIdKey, w.exporterId.String())}, ExporterBylonisSentSpans.M(int64(v.Count)), ExporterBylonisSentSpansBytes.M(int64(v.Size)))
 		if err != nil {
 			w.logger.Error("WriteBatchOfSpansV3 usage metric error", zap.Error(err))
 		}
