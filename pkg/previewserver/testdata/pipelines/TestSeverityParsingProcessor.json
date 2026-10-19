@@ -1,0 +1,2787 @@
+{
+  "source": "bylonis/bylonis pkg/query-service/app/logparsingpipeline TestSeverityParsingProcessor (processors: testdata/preview/TestSeverityParsingProcessor.yaml)",
+  "cases": [
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-severity-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-severity-parser",
+                  "if": "attributes?.test_severity != nil && ( type(attributes.test_severity) == \"string\" || ( type(attributes.test_severity) in [\"int\", \"float\"] && attributes.test_severity == float(int(attributes.test_severity)) ) )",
+                  "mapping": {
+                    "debug": [
+                      "test_debug",
+                      "2xx"
+                    ],
+                    "error": [
+                      "test_error",
+                      "5xx"
+                    ],
+                    "fatal": [
+                      "test_fatal"
+                    ],
+                    "info": [
+                      "test_info",
+                      "3xx"
+                    ],
+                    "trace": [
+                      "test_trace"
+                    ],
+                    "warn": [
+                      "test_warn",
+                      "4xx"
+                    ]
+                  },
+                  "overwrite_text": true,
+                  "parse_from": "attributes.test_severity",
+                  "type": "severity_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457083426511",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_trace"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "36643263313339332d363665622d3463",
+                      "spanId": "3863373061646238"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457083433761",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_TRACE"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "63666263303636612d636436332d3437",
+                      "spanId": "3766613238333164"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457083436361",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "trace"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "62373230316232662d393635302d3465",
+                      "spanId": "6236316364323832"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457083438941",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "Trace"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "34393837663236382d396131312d3436",
+                      "spanId": "6666623861366431"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457083426511",
+                      "severityNumber": 1,
+                      "severityText": "TRACE",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_trace"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "36643263313339332d363665622d3463",
+                      "spanId": "3863373061646238"
+                    },
+                    {
+                      "timeUnixNano": "1792341457083438941",
+                      "severityNumber": 1,
+                      "severityText": "TRACE",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "Trace"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "34393837663236382d396131312d3436",
+                      "spanId": "6666623861366431"
+                    },
+                    {
+                      "timeUnixNano": "1792341457083433761",
+                      "severityNumber": 1,
+                      "severityText": "TRACE",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_TRACE"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        }
+                      ],
+                      "traceId": "63666263303636612d636436332d3437",
+                      "spanId": "3766613238333164"
+                    },
+                    {
+                      "timeUnixNano": "1792341457083436361",
+                      "severityNumber": 1,
+                      "severityText": "TRACE",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "trace"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "62373230316232662d393635302d3465",
+                      "spanId": "6236316364323832"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    },
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-severity-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-severity-parser",
+                  "if": "attributes?.test_severity != nil && ( type(attributes.test_severity) == \"string\" || ( type(attributes.test_severity) in [\"int\", \"float\"] && attributes.test_severity == float(int(attributes.test_severity)) ) )",
+                  "mapping": {
+                    "debug": [
+                      "test_debug",
+                      "2xx"
+                    ],
+                    "error": [
+                      "test_error",
+                      "5xx"
+                    ],
+                    "fatal": [
+                      "test_fatal"
+                    ],
+                    "info": [
+                      "test_info",
+                      "3xx"
+                    ],
+                    "trace": [
+                      "test_trace"
+                    ],
+                    "warn": [
+                      "test_warn",
+                      "4xx"
+                    ]
+                  },
+                  "overwrite_text": true,
+                  "parse_from": "attributes.test_severity",
+                  "type": "severity_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457289967407",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_debug"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "34306337383962662d666234302d3466",
+                      "spanId": "3633363364326237"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457289980007",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_DEBUG"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "39383034643832632d343839642d3430",
+                      "spanId": "3332643539336136"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457289985847",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "debug"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33643565623864652d373238642d3437",
+                      "spanId": "6364373164303365"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457289991667",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "DEBUG"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "35313734646338622d316438652d3463",
+                      "spanId": "6339313065653337"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457289997437",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 202
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "64653737333838642d306234312d3434",
+                      "spanId": "3064636435656333"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457289967407",
+                      "severityNumber": 5,
+                      "severityText": "DEBUG",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_debug"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "34306337383962662d666234302d3466",
+                      "spanId": "3633363364326237"
+                    },
+                    {
+                      "timeUnixNano": "1792341457289991667",
+                      "severityNumber": 5,
+                      "severityText": "DEBUG",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "DEBUG"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "35313734646338622d316438652d3463",
+                      "spanId": "6339313065653337"
+                    },
+                    {
+                      "timeUnixNano": "1792341457289985847",
+                      "severityNumber": 5,
+                      "severityText": "DEBUG",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "debug"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33643565623864652d373238642d3437",
+                      "spanId": "6364373164303365"
+                    },
+                    {
+                      "timeUnixNano": "1792341457289980007",
+                      "severityNumber": 5,
+                      "severityText": "DEBUG",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_DEBUG"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "39383034643832632d343839642d3430",
+                      "spanId": "3332643539336136"
+                    },
+                    {
+                      "timeUnixNano": "1792341457289997437",
+                      "severityNumber": 5,
+                      "severityText": "DEBUG",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 202
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "64653737333838642d306234312d3434",
+                      "spanId": "3064636435656333"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    },
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-severity-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-severity-parser",
+                  "if": "attributes?.test_severity != nil && ( type(attributes.test_severity) == \"string\" || ( type(attributes.test_severity) in [\"int\", \"float\"] && attributes.test_severity == float(int(attributes.test_severity)) ) )",
+                  "mapping": {
+                    "debug": [
+                      "test_debug",
+                      "2xx"
+                    ],
+                    "error": [
+                      "test_error",
+                      "5xx"
+                    ],
+                    "fatal": [
+                      "test_fatal"
+                    ],
+                    "info": [
+                      "test_info",
+                      "3xx"
+                    ],
+                    "trace": [
+                      "test_trace"
+                    ],
+                    "warn": [
+                      "test_warn",
+                      "4xx"
+                    ]
+                  },
+                  "overwrite_text": true,
+                  "parse_from": "attributes.test_severity",
+                  "type": "severity_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457497943536",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_info"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "31653931346362332d333433352d3462",
+                      "spanId": "6135313461633337"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457497959566",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_INFO"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "66353561393637302d393266372d3461",
+                      "spanId": "6539663037656331"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457497966366",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "info"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "65663537366333302d303064352d3434",
+                      "spanId": "3562373766326136"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457497973536",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "INFO"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "61386136376439662d343833352d3437",
+                      "spanId": "3233393062643961"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457497979866",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 302
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "63386236353238342d623662622d3430",
+                      "spanId": "3634333966643963"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457497943536",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_info"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "31653931346362332d333433352d3462",
+                      "spanId": "6135313461633337"
+                    },
+                    {
+                      "timeUnixNano": "1792341457497973536",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "INFO"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "61386136376439662d343833352d3437",
+                      "spanId": "3233393062643961"
+                    },
+                    {
+                      "timeUnixNano": "1792341457497959566",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_INFO"
+                          }
+                        }
+                      ],
+                      "traceId": "66353561393637302d393266372d3461",
+                      "spanId": "6539663037656331"
+                    },
+                    {
+                      "timeUnixNano": "1792341457497966366",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "info"
+                          }
+                        }
+                      ],
+                      "traceId": "65663537366333302d303064352d3434",
+                      "spanId": "3562373766326136"
+                    },
+                    {
+                      "timeUnixNano": "1792341457497979866",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 302
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "63386236353238342d623662622d3430",
+                      "spanId": "3634333966643963"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    },
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-severity-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-severity-parser",
+                  "if": "attributes?.test_severity != nil && ( type(attributes.test_severity) == \"string\" || ( type(attributes.test_severity) in [\"int\", \"float\"] && attributes.test_severity == float(int(attributes.test_severity)) ) )",
+                  "mapping": {
+                    "debug": [
+                      "test_debug",
+                      "2xx"
+                    ],
+                    "error": [
+                      "test_error",
+                      "5xx"
+                    ],
+                    "fatal": [
+                      "test_fatal"
+                    ],
+                    "info": [
+                      "test_info",
+                      "3xx"
+                    ],
+                    "trace": [
+                      "test_trace"
+                    ],
+                    "warn": [
+                      "test_warn",
+                      "4xx"
+                    ]
+                  },
+                  "overwrite_text": true,
+                  "parse_from": "attributes.test_severity",
+                  "type": "severity_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457706814715",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_warn"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "34363038393638362d383931362d3433",
+                      "spanId": "3863356539343966"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457706826715",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_WARN"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "64386533653431312d383437312d3466",
+                      "spanId": "3763313766626362"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457706832485",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "warn"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "36326239383362642d656430322d3430",
+                      "spanId": "3439313261396564"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457706838065",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "WARN"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "37616366643334642d363030642d3436",
+                      "spanId": "3330633738303237"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457706843075",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 404
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33653937313636632d313739622d3439",
+                      "spanId": "3763336334613639"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457706843075",
+                      "severityNumber": 13,
+                      "severityText": "WARN",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 404
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33653937313636632d313739622d3439",
+                      "spanId": "3763336334613639"
+                    },
+                    {
+                      "timeUnixNano": "1792341457706826715",
+                      "severityNumber": 13,
+                      "severityText": "WARN",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_WARN"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        }
+                      ],
+                      "traceId": "64386533653431312d383437312d3466",
+                      "spanId": "3763313766626362"
+                    },
+                    {
+                      "timeUnixNano": "1792341457706814715",
+                      "severityNumber": 13,
+                      "severityText": "WARN",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_warn"
+                          }
+                        }
+                      ],
+                      "traceId": "34363038393638362d383931362d3433",
+                      "spanId": "3863356539343966"
+                    },
+                    {
+                      "timeUnixNano": "1792341457706832485",
+                      "severityNumber": 13,
+                      "severityText": "WARN",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "warn"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        }
+                      ],
+                      "traceId": "36326239383362642d656430322d3430",
+                      "spanId": "3439313261396564"
+                    },
+                    {
+                      "timeUnixNano": "1792341457706838065",
+                      "severityNumber": 13,
+                      "severityText": "WARN",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "WARN"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        }
+                      ],
+                      "traceId": "37616366643334642d363030642d3436",
+                      "spanId": "3330633738303237"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    },
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-severity-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-severity-parser",
+                  "if": "attributes?.test_severity != nil && ( type(attributes.test_severity) == \"string\" || ( type(attributes.test_severity) in [\"int\", \"float\"] && attributes.test_severity == float(int(attributes.test_severity)) ) )",
+                  "mapping": {
+                    "debug": [
+                      "test_debug",
+                      "2xx"
+                    ],
+                    "error": [
+                      "test_error",
+                      "5xx"
+                    ],
+                    "fatal": [
+                      "test_fatal"
+                    ],
+                    "info": [
+                      "test_info",
+                      "3xx"
+                    ],
+                    "trace": [
+                      "test_trace"
+                    ],
+                    "warn": [
+                      "test_warn",
+                      "4xx"
+                    ]
+                  },
+                  "overwrite_text": true,
+                  "parse_from": "attributes.test_severity",
+                  "type": "severity_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457913356521",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_error"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "31333065366533392d383865612d3465",
+                      "spanId": "3437323039633265"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457913363671",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_ERROR"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "62386136323965372d353437612d3432",
+                      "spanId": "6334336330613732"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457913366581",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "error"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "32313932363965312d313338622d3439",
+                      "spanId": "3234383262623764"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457913369201",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "ERROR"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "38366638366165662d303961642d3435",
+                      "spanId": "3864333535363031"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457913371681",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 500
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "36666564636130622d623835642d3438",
+                      "spanId": "6231626232333931"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341457913356521",
+                      "severityNumber": 17,
+                      "severityText": "ERROR",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_error"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "31333065366533392d383865612d3465",
+                      "spanId": "3437323039633265"
+                    },
+                    {
+                      "timeUnixNano": "1792341457913366581",
+                      "severityNumber": 17,
+                      "severityText": "ERROR",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "error"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "32313932363965312d313338622d3439",
+                      "spanId": "3234383262623764"
+                    },
+                    {
+                      "timeUnixNano": "1792341457913369201",
+                      "severityNumber": 17,
+                      "severityText": "ERROR",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "ERROR"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "38366638366165662d303961642d3435",
+                      "spanId": "3864333535363031"
+                    },
+                    {
+                      "timeUnixNano": "1792341457913371681",
+                      "severityNumber": 17,
+                      "severityText": "ERROR",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "4"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "doubleValue": 500
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "36666564636130622d623835642d3438",
+                      "spanId": "6231626232333931"
+                    },
+                    {
+                      "timeUnixNano": "1792341457913363671",
+                      "severityNumber": 17,
+                      "severityText": "ERROR",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_ERROR"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "62386136323965372d353437612d3432",
+                      "spanId": "6334336330613732"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    },
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-severity-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-severity-parser",
+                  "if": "attributes?.test_severity != nil && ( type(attributes.test_severity) == \"string\" || ( type(attributes.test_severity) in [\"int\", \"float\"] && attributes.test_severity == float(int(attributes.test_severity)) ) )",
+                  "mapping": {
+                    "debug": [
+                      "test_debug",
+                      "2xx"
+                    ],
+                    "error": [
+                      "test_error",
+                      "5xx"
+                    ],
+                    "fatal": [
+                      "test_fatal"
+                    ],
+                    "info": [
+                      "test_info",
+                      "3xx"
+                    ],
+                    "trace": [
+                      "test_trace"
+                    ],
+                    "warn": [
+                      "test_warn",
+                      "4xx"
+                    ]
+                  },
+                  "overwrite_text": true,
+                  "parse_from": "attributes.test_severity",
+                  "type": "severity_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341458118317505",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_fatal"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "38613637656333332d303035342d3434",
+                      "spanId": "3535363832633364"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341458118354375",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_FATAL"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33396530373330332d356439342d3463",
+                      "spanId": "6332353338646638"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341458118361125",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "fatal"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33353263343661632d376361632d3463",
+                      "spanId": "3666646131306362"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341458118379654",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "FATAL"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "62663061393463662d386465332d3438",
+                      "spanId": "3136376266633261"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341458118379654",
+                      "severityNumber": 21,
+                      "severityText": "FATAL",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "3"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "FATAL"
+                          }
+                        }
+                      ],
+                      "traceId": "62663061393463662d386465332d3438",
+                      "spanId": "3136376266633261"
+                    },
+                    {
+                      "timeUnixNano": "1792341458118317505",
+                      "severityNumber": 21,
+                      "severityText": "FATAL",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "test_fatal"
+                          }
+                        }
+                      ],
+                      "traceId": "38613637656333332d303035342d3434",
+                      "spanId": "3535363832633364"
+                    },
+                    {
+                      "timeUnixNano": "1792341458118361125",
+                      "severityNumber": 21,
+                      "severityText": "FATAL",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "2"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "fatal"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "33353263343661632d376361632d3463",
+                      "spanId": "3666646131306362"
+                    },
+                    {
+                      "timeUnixNano": "1792341458118354375",
+                      "severityNumber": 21,
+                      "severityText": "FATAL",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "1"
+                          }
+                        },
+                        {
+                          "key": "test_severity",
+                          "value": {
+                            "stringValue": "TEST_FATAL"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        }
+                      ],
+                      "traceId": "33396530373330332d356439342d3463",
+                      "spanId": "6332353338646638"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    }
+  ]
+}

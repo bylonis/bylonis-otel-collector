@@ -155,7 +155,9 @@ func NewCollectorSimulator(
 
 	collectorSvc, err := service.New(ctx, svcSettings, collectorCfg.Service)
 	if err != nil {
-		return nil, cleanupFn, fmt.Errorf("could not instantiate collector service: %w", err)
+		// Building the service builds the processors from their config (operators, regexes,
+		// grok patterns...), so its errors are config errors.
+		return nil, cleanupFn, InvalidConfigError(fmt.Errorf("could not instantiate collector service: %w", err))
 	}
 
 	return &CollectorSimulator{

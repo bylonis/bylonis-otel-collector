@@ -1,0 +1,380 @@
+[
+  {
+    "name": "resource equal (env)",
+    "expr": "resource[\"env\"] == \"prod\"",
+    "expected_matches": [
+      0,
+      1,
+      4,
+      5,
+      9,
+      11,
+      13,
+      14,
+      17,
+      18
+    ]
+  },
+  {
+    "name": "resource not equal (env)",
+    "expr": "resource[\"env\"] != \"prod\"",
+    "expected_matches": [
+      2,
+      3,
+      6,
+      7,
+      8,
+      10,
+      12,
+      15,
+      16,
+      19,
+      20
+    ]
+  },
+  {
+    "name": "attribute less than (numeric)",
+    "expr": "attributes[\"count\"] != nil \u0026\u0026 attributes[\"count\"] \u003c 8",
+    "expected_matches": [
+      4
+    ]
+  },
+  {
+    "name": "attribute greater than (numeric)",
+    "expr": "attributes[\"count\"] != nil \u0026\u0026 attributes[\"count\"] \u003e 8",
+    "expected_matches": [
+      5
+    ]
+  },
+  {
+    "name": "body contains (case insensitive)",
+    "expr": "body != nil \u0026\u0026 lower(body) contains lower(\"checkbody\")",
+    "expected_matches": [
+      2,
+      9,
+      10,
+      16
+    ]
+  },
+  {
+    "name": "body ncontains",
+    "expr": "body != nil \u0026\u0026 lower(body) not contains lower(\"checkbody\")",
+    "expected_matches": [
+      0,
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      11,
+      12,
+      13,
+      14,
+      15,
+      17
+    ]
+  },
+  {
+    "name": "body.msg (case insensitive)",
+    "expr": "body.msg != nil \u0026\u0026 lower(body.msg) contains lower(\"checkbody\")",
+    "expected_matches": [
+      2,
+      9,
+      10,
+      18
+    ]
+  },
+  {
+    "name": "body regex",
+    "expr": "body != nil \u0026\u0026 body matches \"[0-1]+regex\"",
+    "expected_matches": [
+      4
+    ]
+  },
+  {
+    "name": "body not regex",
+    "expr": "body != nil \u0026\u0026 body not matches \"[0-1]+regex\"",
+    "expected_matches": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ]
+  },
+  {
+    "name": "body top-level key exists (body.msg)",
+    "expr": "(((type(body) == \"string\" \u0026\u0026 isJSON(body)) \u0026\u0026 \"msg\" in fromJSON(body)) or (type(body) == \"map\" \u0026\u0026 (body.msg != nil)))",
+    "expected_matches": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      9,
+      10,
+      11,
+      12,
+      18
+    ]
+  },
+  {
+    "name": "body top-level key not exists (body.missing)",
+    "expr": "(((type(body) == \"string\" \u0026\u0026 isJSON(body)) \u0026\u0026 \"missing\" not in fromJSON(body)) or (type(body) == \"map\" \u0026\u0026 (body.missing == nil)))",
+    "expected_matches": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      18,
+      20
+    ]
+  },
+  {
+    "name": "attribute exists",
+    "expr": "\"service\" in attributes",
+    "expected_matches": [
+      6,
+      7,
+      8,
+      15
+    ]
+  },
+  {
+    "name": "attribute not exists",
+    "expr": "\"service\" not in attributes",
+    "expected_matches": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  },
+  {
+    "name": "trace_id exists",
+    "expr": "trace_id != nil",
+    "expected_matches": [
+      1,
+      2,
+      5,
+      7,
+      12,
+      15,
+      19
+    ]
+  },
+  {
+    "name": "trace_id not exists",
+    "expr": "trace_id == nil",
+    "expected_matches": [
+      0,
+      3,
+      4,
+      6,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14,
+      16,
+      17,
+      18,
+      20
+    ]
+  },
+  {
+    "name": "span_id exists",
+    "expr": "span_id != nil",
+    "expected_matches": [
+      1,
+      3,
+      5,
+      12,
+      17,
+      20
+    ]
+  },
+  {
+    "name": "span_id not exists",
+    "expr": "span_id == nil",
+    "expected_matches": [
+      0,
+      2,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      13,
+      14,
+      15,
+      16,
+      18,
+      19
+    ]
+  },
+  {
+    "name": "in (attribute in list)",
+    "expr": "attributes[\"level\"] != nil \u0026\u0026 attributes[\"level\"] in ['info','error']",
+    "expected_matches": [
+      0,
+      1,
+      2,
+      14,
+      16,
+      20
+    ]
+  },
+  {
+    "name": "not in (attribute not in list)",
+    "expr": "attributes[\"level\"] != nil \u0026\u0026 attributes[\"level\"] not in ['error','warn']",
+    "expected_matches": [
+      0,
+      2,
+      3,
+      16,
+      20
+    ]
+  },
+  {
+    "name": "multi filter AND",
+    "expr": "resource[\"env\"] == \"staging\" and attributes[\"level\"] == \"info\"",
+    "expected_matches": [
+      2,
+      16
+    ]
+  },
+  {
+    "name": "multi filter AND (two attributes)",
+    "expr": "attributes[\"service\"] == \"auth\" and \"level\" not in attributes",
+    "expected_matches": [
+      6,
+      7
+    ]
+  },
+  {
+    "name": "multi filter AND body contains + attribute",
+    "expr": "body != nil \u0026\u0026 lower(body) contains lower(\"Connection\") and resource[\"env\"] == \"prod\"",
+    "expected_matches": [
+      14
+    ]
+  },
+  {
+    "name": "multi filter AND body contains + service",
+    "expr": "body != nil \u0026\u0026 lower(body) contains lower(\"login\") and attributes[\"service\"] == \"auth\"",
+    "expected_matches": [
+      6,
+      15
+    ]
+  },
+  {
+    "name": "multi filter AND env + level (prod error)",
+    "expr": "resource[\"env\"] == \"prod\" and attributes[\"level\"] == \"error\"",
+    "expected_matches": [
+      1,
+      14
+    ]
+  },
+  {
+    "name": "multi filter AND three conditions (staging + checkbody + info)",
+    "expr": "resource[\"env\"] == \"staging\" and body != nil \u0026\u0026 lower(body) contains lower(\"checkbody\") and attributes[\"level\"] == \"info\"",
+    "expected_matches": [
+      2,
+      16
+    ]
+  },
+  {
+    "name": "multi filter AND trace_id exists + body contains",
+    "expr": "trace_id != nil and body != nil \u0026\u0026 lower(body) contains lower(\"checkbody\")",
+    "expected_matches": [
+      2
+    ]
+  },
+  {
+    "name": "multi filter AND span_id nexists + service auth",
+    "expr": "span_id == nil and attributes[\"service\"] == \"auth\"",
+    "expected_matches": [
+      6,
+      7,
+      15
+    ]
+  },
+  {
+    "name": "multi filter AND body regex + attribute",
+    "expr": "body != nil \u0026\u0026 body matches \"[0-1]+regex\" and attributes[\"code\"] == \"200\"",
+    "expected_matches": [
+      4
+    ]
+  },
+  {
+    "name": "multi filter AND no trace_id + no span_id + env prod",
+    "expr": "trace_id == nil and span_id == nil and resource[\"env\"] == \"prod\"",
+    "expected_matches": [
+      0,
+      4,
+      9,
+      11,
+      13,
+      14,
+      18
+    ]
+  },
+  {
+    "name": "multi filter AND level warn + body contains",
+    "expr": "attributes[\"level\"] == \"warn\" and body != nil \u0026\u0026 lower(body) contains lower(\"disk\")",
+    "expected_matches": [
+      17
+    ]
+  },
+  {
+    "name": "no matches (attribute value not present)",
+    "expr": "resource[\"env\"] == \"never\"",
+    "expected_matches": []
+  },
+  {
+    "name": "attribute equal and trace_id exists",
+    "expr": "attributes[\"code\"] == \"404\" and trace_id != nil",
+    "expected_matches": [
+      5
+    ]
+  }
+]

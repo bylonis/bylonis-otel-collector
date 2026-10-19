@@ -1,0 +1,329 @@
+{
+  "source": "bylonis/bylonis pkg/query-service/app/logparsingpipeline TestTraceParsingProcessor (processors: testdata/preview/TestTraceParsingProcessor.yaml)",
+  "cases": [
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-trace-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-trace-parser",
+                  "span_id": {
+                    "parse_from": "attributes.test_span_id"
+                  },
+                  "trace_flags": {
+                    "parse_from": "attributes.test_trace_flags"
+                  },
+                  "trace_id": {
+                    "parse_from": "attributes.test_trace_id"
+                  },
+                  "type": "trace_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341456151147641",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "test_span_id",
+                          "value": {
+                            "stringValue": "50eb080bfef201e7"
+                          }
+                        },
+                        {
+                          "key": "test_trace_flags",
+                          "value": {
+                            "stringValue": "29"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_trace_id",
+                          "value": {
+                            "stringValue": "64b87f00c39f02eba56df5dceb53c0a5"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341456151147641",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "test_span_id",
+                          "value": {
+                            "stringValue": "50eb080bfef201e7"
+                          }
+                        },
+                        {
+                          "key": "test_trace_flags",
+                          "value": {
+                            "stringValue": "29"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_trace_id",
+                          "value": {
+                            "stringValue": "64b87f00c39f02eba56df5dceb53c0a5"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        }
+                      ],
+                      "flags": 41,
+                      "traceId": "64b87f00c39f02eba56df5dceb53c0a5",
+                      "spanId": "50eb080bfef201e7"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    },
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-trace-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "id": "test-trace-parser",
+                  "trace_flags": {
+                    "parse_from": "attributes.test_trace_flags"
+                  },
+                  "trace_id": {
+                    "parse_from": "attributes.test_trace_id"
+                  },
+                  "type": "trace_parser"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341456151147641",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_trace_id",
+                          "value": {
+                            "stringValue": "64b87f00c39f02eba56df5dceb53c0a5"
+                          }
+                        },
+                        {
+                          "key": "test_span_id",
+                          "value": {
+                            "stringValue": "50eb080bfef201e7"
+                          }
+                        },
+                        {
+                          "key": "test_trace_flags",
+                          "value": {
+                            "stringValue": "29"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341456151147641",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "test_span_id",
+                          "value": {
+                            "stringValue": "50eb080bfef201e7"
+                          }
+                        },
+                        {
+                          "key": "test_trace_flags",
+                          "value": {
+                            "stringValue": "29"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "test_trace_id",
+                          "value": {
+                            "stringValue": "64b87f00c39f02eba56df5dceb53c0a5"
+                          }
+                        }
+                      ],
+                      "flags": 41,
+                      "traceId": "64b87f00c39f02eba56df5dceb53c0a5"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    }
+  ]
+}

@@ -11,7 +11,9 @@ import (
 
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/migrate"
+	"github.com/bylonis/bylonis-otel-collector/components"
 	"github.com/bylonis/bylonis-otel-collector/constants"
+	"github.com/bylonis/bylonis-otel-collector/pkg/previewserver"
 	"github.com/bylonis/bylonis-otel-collector/service"
 	"github.com/bylonis/bylonis-otel-collector/signozcol"
 	"github.com/spf13/cobra"
@@ -66,6 +68,20 @@ func main() {
 			ctx, cancel := signal.NotifyContext(ctx, syscall.SIGINT, syscall.SIGTERM)
 			defer cancel()
 
+			preview, err := startPreviewServer(logger)
+			if err != nil {
+				logger.Fatal("failed to start the logs pipelines preview server", zap.Error(err))
+			}
+			if preview != nil {
+				defer func() {
+					stopCtx, stopCancel := context.WithTimeout(context.Background(), 5*time.Second)
+					defer stopCancel()
+					if err := preview.Shutdown(stopCtx); err != nil {
+						logger.Warn("failed to stop the logs pipelines preview server", zap.Error(err))
+					}
+				}()
+			}
+
 			if err := runInteractive(ctx, logger, svc); err != nil {
 				logger.Fatal("failed to run service:", zap.Error(err))
 			}
@@ -76,11 +92,36 @@ func main() {
 
 	config.Clickhouse.RegisterFlags(rootCmd)
 	config.Collector.RegisterFlags(rootCmd)
+	config.Preview.RegisterFlags(rootCmd)
 
 	migrate.Register(rootCmd, logger)
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
+}
+
+// startPreviewServer starts the logs pipelines preview server for the backend, outside the
+// collector config that OpAMP manages, so config pushes do not restart it. It stays off
+// without a token. A listen error is logged and the collector runs on without it: ingestion
+// does not depend on the preview.
+func startPreviewServer(logger *zap.Logger) (*previewserver.Server, error) {
+	if config.Preview.Token == "" {
+		logger.Info("logs pipelines preview server disabled: no token (BYLONIS_OTEL_COLLECTOR_PREVIEW_TOKEN)")
+		return nil, nil
+	}
+	factories, err := components.Components()
+	if err != nil {
+		return nil, fmt.Errorf("could not build the component factories: %w", err)
+	}
+	preview, err := previewserver.New(config.Preview.Token, previewserver.DefaultLimits(), factories.Processors, logger)
+	if err != nil {
+		return nil, err
+	}
+	if err := preview.Start(config.Preview.Listen); err != nil {
+		logger.Error("logs pipelines preview server not started", zap.Error(err))
+		return nil, nil
+	}
+	return preview, nil
 }
 
 func runInteractive(ctx context.Context, logger *zap.Logger, svc service.Service) error {
