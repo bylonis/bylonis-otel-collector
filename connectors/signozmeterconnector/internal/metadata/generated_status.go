@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signozmeter")
+	Type      = component.MustNewType("bylonismeter")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/connectors/signozmeterconnector"
 )
 

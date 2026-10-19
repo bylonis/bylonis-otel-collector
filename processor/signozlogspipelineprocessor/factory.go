@@ -42,15 +42,15 @@ func createLogsProcessor(
 ) (processor.Logs, error) {
 	pCfg, ok := cfg.(*Config)
 	if !ok {
-		return nil, errors.New("could not initialize signozlogspipeline processor")
+		return nil, errors.New("could not initialize bylonislogspipeline processor")
 	}
 	if len(pCfg.BaseConfig.Operators) == 0 {
-		return nil, errors.New("no operators were configured for signozlogspipeline processor")
+		return nil, errors.New("no operators were configured for bylonislogspipeline processor")
 	}
 
 	proc, err := newLogsPipelineProcessor(pCfg, set, nextConsumer)
 	if err != nil {
-		return nil, fmt.Errorf("couldn't build \"signozlogspipeline\" processor %w", err)
+		return nil, fmt.Errorf("couldn't build \"bylonislogspipeline\" processor %w", err)
 	}
 
 	return proc, nil

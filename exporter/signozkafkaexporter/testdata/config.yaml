@@ -1,4 +1,4 @@
-signozkafkaexporter:
+byloniskafkaexporter:
   topic: spans
   brokers:
     - "foo:123"

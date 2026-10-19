@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signozjsontypeexporter")
+	Type      = component.MustNewType("bylonisjsontypeexporter")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/exporter/jsontypeexporter"
 )
 

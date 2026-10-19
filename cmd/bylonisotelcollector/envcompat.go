@@ -5,16 +5,15 @@ import (
 	"strings"
 
 	flag "github.com/spf13/pflag"
-	"go.uber.org/zap"
 )
 
 const (
 	// envPrefix names the env vars that set collector flags, e.g.
 	// BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_DSN for --clickhouse-dsn.
 	envPrefix = "BYLONIS_OTEL_COLLECTOR_"
-	// legacyEnvPrefix is still read when the BYLONIS_ variable is unset.
-	// Deprecated: kept so existing deployments keep working; drop in a later release.
-	legacyEnvPrefix = "SIGNOZ_OTEL_COLLECTOR_"
+	// removedEnvPrefix names the upstream env vars, no longer read since v1.0.
+	// Setting one fails instead of being silently ignored.
+	removedEnvPrefix = "SIGNOZ_OTEL_COLLECTOR_"
 )
 
 func envKey(prefix, flagName string) string {
@@ -22,9 +21,10 @@ func envKey(prefix, flagName string) string {
 }
 
 // setFlagsFromEnv sets every flag that was not given on the command line from
-// its BYLONIS_OTEL_COLLECTOR_* env var, falling back to SIGNOZ_OTEL_COLLECTOR_*
-// with a deprecation warning. Empty values count as unset.
-func setFlagsFromEnv(flags *flag.FlagSet, lookup func(string) (string, bool), logger *zap.Logger) error {
+// its BYLONIS_OTEL_COLLECTOR_* env var. Empty values count as unset. A flag
+// that is only set with the upstream prefix is an error that names the
+// variable to rename.
+func setFlagsFromEnv(flags *flag.FlagSet, lookup func(string) (string, bool)) error {
 	var errs []error
 	flags.VisitAll(func(f *flag.Flag) {
 		if f.Changed {
@@ -34,13 +34,11 @@ func setFlagsFromEnv(flags *flag.FlagSet, lookup func(string) (string, bool), lo
 		key := envKey(envPrefix, f.Name)
 		val, ok := lookup(key)
 		if !ok || val == "" {
-			legacyKey := envKey(legacyEnvPrefix, f.Name)
-			val, ok = lookup(legacyKey)
-			if !ok || val == "" {
-				return
+			removedKey := envKey(removedEnvPrefix, f.Name)
+			if old, ok := lookup(removedKey); ok && old != "" {
+				errs = append(errs, fmt.Errorf("%s is no longer read (removed in v1.0): rename it to %s", removedKey, key))
 			}
-			logger.Warn("deprecated environment variable, rename it", zap.String("old", legacyKey), zap.String("new", key))
-			key = legacyKey
+			return
 		}
 
 		if err := flags.Set(f.Name, val); err != nil {

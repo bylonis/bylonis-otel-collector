@@ -32,7 +32,6 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				MetricsFlushInterval: time.Hour * 1,
-				LegacyMetricNames:    true,
 			},
 		},
 		{
@@ -50,7 +49,24 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				MetricsFlushInterval: time.Hour * 1,
-				LegacyMetricNames:    true,
+			},
+		},
+		{
+			name: "legacy_metric_names_false",
+			expect: &Config{
+				Dimensions: []Dimension{
+					{
+						Name: "service.name",
+					},
+					{
+						Name: "deployment.environment",
+					},
+					{
+						Name: "host.name",
+					},
+				},
+				MetricsFlushInterval: time.Hour * 1,
+				LegacyMetricNames:    func() *bool { b := false; return &b }(),
 			},
 		},
 		{
@@ -68,7 +84,6 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				MetricsFlushInterval: time.Minute * 1,
-				LegacyMetricNames:    true,
 			},
 		},
 	}
@@ -118,4 +133,11 @@ func TestConfigErrors(t *testing.T) {
 			assert.ErrorContains(t, err, tc.expect)
 		})
 	}
+}
+
+func TestValidateLegacyMetricNames(t *testing.T) {
+	no, yes := false, true
+	assert.NoError(t, (&Config{}).Validate())
+	assert.NoError(t, (&Config{LegacyMetricNames: &no}).Validate())
+	assert.ErrorIs(t, (&Config{LegacyMetricNames: &yes}).Validate(), errLegacyMetricNames)
 }

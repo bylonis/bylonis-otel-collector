@@ -1,6 +1,7 @@
 package signozmeterconnector
 
 import (
+	"errors"
 	"fmt"
 	"time"
 )
@@ -24,6 +25,9 @@ const (
 	metricDescLogsSize  = "The size of log records observed."
 )
 
+// errLegacyMetricNames rejects legacy_metric_names: true.
+var errLegacyMetricNames = errors.New("legacy_metric_names was removed in v1.0: only the bylonis.meter.* metric names are emitted; remove the option")
+
 // Config for the connector
 type Config struct {
 	// the dimensions to record from telemetry data resource attributes for meter metrics labels
@@ -32,11 +36,13 @@ type Config struct {
 	// MetricsEmitInterval is the time period between when metrics are flushed or emitted to the configured MetricsExporter.
 	MetricsFlushInterval time.Duration `mapstructure:"metrics_flush_interval"`
 
-	// LegacyMetricNames also emits every meter metric under its SigNoz name
-	// (signoz.meter.span.count…) next to the bylonis one, for the UIs and
-	// alerts that still query the old names. Default true while they move to
-	// the new names (bylonis/bylonis#47).
-	LegacyMetricNames bool `mapstructure:"legacy_metric_names"`
+	// LegacyMetricNames is the legacy_metric_names option, removed in v1.0:
+	// only the bylonis.meter.* names are emitted. It is still parsed so that
+	// configs with "legacy_metric_names: false" keep loading (with a warning);
+	// true fails validation.
+	//
+	// Deprecated: remove the option from the config.
+	LegacyMetricNames *bool `mapstructure:"legacy_metric_names"`
 
 	// prevent unkeyed literal initialization
 	_ struct{}
@@ -53,6 +59,9 @@ type Dimension struct {
 func (c *Config) Validate() error {
 	if err := validateDimensions(c.Dimensions); err != nil {
 		return fmt.Errorf("failed validating dimensions: %w", err)
+	}
+	if c.LegacyMetricNames != nil && *c.LegacyMetricNames {
+		return errLegacyMetricNames
 	}
 
 	return nil

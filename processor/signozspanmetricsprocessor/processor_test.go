@@ -327,69 +327,50 @@ func TestProcessorConsumeTraces(t *testing.T) {
 	}
 }
 
-func TestBuildMetricsLegacyNames(t *testing.T) {
-	bylonisNames := []string{
+// Only the bylonis_* names are emitted, tagged with bylonis.collector.id, also
+// with legacy_metric_names: false still in the config.
+func TestBuildMetricsBylonisNamesOnly(t *testing.T) {
+	want := []string{
 		"bylonis_calls_total", "bylonis_latency",
 		"bylonis_external_call_latency_sum", "bylonis_external_call_latency_count",
 		"bylonis_db_latency_sum", "bylonis_db_latency_count",
 		"bylonis_latency", // exponential histogram, always present
 	}
-	legacyNames := []string{
-		"signoz_calls_total", "signoz_latency",
-		"signoz_external_call_latency_sum", "signoz_external_call_latency_count",
-		"signoz_db_latency_sum", "signoz_db_latency_count",
-		"signoz_latency",
+	mexp := &mocks.MetricsExporter{}
+	mexp.On("ConsumeMetrics", mock.Anything, mock.Anything).Return(nil)
+	tcon := &mocks.TracesConsumer{}
+	tcon.On("ConsumeTraces", mock.Anything, mock.Anything).Return(nil)
+	defaultNullValue := pcommon.NewValueStr("defaultNullValue")
+	p := newProcessorImp(mexp, tcon, &defaultNullValue, delta, zaptest.NewLogger(t), []ExcludePattern{})
+	p.instanceID = "collector-1"
+	no := false
+	p.config.LegacyMetricNames = &no
+
+	require.NoError(t, p.ConsumeTraces(context.Background(), buildSampleTrace()))
+	m, err := p.buildMetrics()
+	require.NoError(t, err)
+
+	ms := m.ResourceMetrics().At(0).ScopeMetrics().At(0).Metrics()
+	var names []string
+	for i := 0; i < ms.Len(); i++ {
+		names = append(names, ms.At(i).Name())
 	}
-	for _, legacy := range []bool{false, true} {
-		t.Run(fmt.Sprintf("legacy_metric_names=%v", legacy), func(t *testing.T) {
-			mexp := &mocks.MetricsExporter{}
-			mexp.On("ConsumeMetrics", mock.Anything, mock.Anything).Return(nil)
-			tcon := &mocks.TracesConsumer{}
-			tcon.On("ConsumeTraces", mock.Anything, mock.Anything).Return(nil)
-			defaultNullValue := pcommon.NewValueStr("defaultNullValue")
-			p := newProcessorImp(mexp, tcon, &defaultNullValue, delta, zaptest.NewLogger(t), []ExcludePattern{})
-			p.instanceID = "collector-1"
-			p.config.LegacyMetricNames = legacy
+	assert.Equal(t, want, names)
 
-			require.NoError(t, p.ConsumeTraces(context.Background(), buildSampleTrace()))
-			m, err := p.buildMetrics()
-			require.NoError(t, err)
-
-			ms := m.ResourceMetrics().At(0).ScopeMetrics().At(0).Metrics()
-			var names []string
-			for i := 0; i < ms.Len(); i++ {
-				names = append(names, ms.At(i).Name())
-			}
-			want := bylonisNames
-			if legacy {
-				want = append(append([]string{}, bylonisNames...), legacyNames...)
-			}
-			assert.Equal(t, want, names)
-
-			// bylonis_* carry bylonis.collector.id; the signoz_* copies, the
-			// signoz.collector.id they always had.
-			for i := 0; i < ms.Len(); i++ {
-				if ms.At(i).Type() != pmetric.MetricTypeSum {
-					continue
-				}
-				attrs := ms.At(i).Sum().DataPoints()
-				if attrs.Len() == 0 {
-					continue
-				}
-				a := attrs.At(0).Attributes()
-				key, other := "bylonis.collector.id", "signoz.collector.id"
-				if strings.HasPrefix(ms.At(i).Name(), "signoz_") {
-					key, other = other, key
-				}
-				v, ok := a.Get(key)
-				assert.True(t, ok, ms.At(i).Name())
-				assert.Equal(t, "collector-1", v.Str())
-				_, ok = a.Get(other)
-				assert.False(t, ok, ms.At(i).Name())
-				_, ok = a.Get("resource_" + key)
-				assert.True(t, ok, ms.At(i).Name())
-			}
-		})
+	for i := 0; i < ms.Len(); i++ {
+		if ms.At(i).Type() != pmetric.MetricTypeSum {
+			continue
+		}
+		attrs := ms.At(i).Sum().DataPoints()
+		if attrs.Len() == 0 {
+			continue
+		}
+		a := attrs.At(0).Attributes()
+		v, ok := a.Get("bylonis.collector.id")
+		assert.True(t, ok, ms.At(i).Name())
+		assert.Equal(t, "collector-1", v.Str())
+		_, ok = a.Get("resource_bylonis.collector.id")
+		assert.True(t, ok, ms.At(i).Name())
 	}
 }
 

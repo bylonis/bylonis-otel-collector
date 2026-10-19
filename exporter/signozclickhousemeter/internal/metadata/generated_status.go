@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signozclickhousemeter")
+	Type      = component.MustNewType("bylonisclickhousemeter")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/exporter/signozclickhousemeter"
 )
 

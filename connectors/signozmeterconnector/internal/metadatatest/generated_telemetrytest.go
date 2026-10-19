@@ -16,7 +16,7 @@ import (
 
 func NewSettings(tt *componenttest.Telemetry) connector.Settings {
 	set := connectortest.NewNopSettings(connectortest.NopType)
-	set.ID = component.NewID(component.MustNewType("signozmeter"))
+	set.ID = component.NewID(component.MustNewType("bylonismeter"))
 	set.TelemetrySettings = tt.NewTelemetrySettings()
 	return set
 }

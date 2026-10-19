@@ -6,7 +6,7 @@ import (
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 	internalmetadata "github.com/bylonis/bylonis-otel-collector/exporter/signozclickhousemetrics/internal/metadata"
-	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbnames"
 	"github.com/bylonis/bylonis-otel-collector/usage"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/collector/component"
@@ -37,7 +37,7 @@ func createMetricsExporter(ctx context.Context, set exporter.Settings,
 		return nil, err
 	}
 
-	conn, err := dbprefix.Open(connOptions)
+	conn, err := clickhouse.Open(connOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func createMetricsExporter(ctx context.Context, set exporter.Settings,
 		usage.Options{
 			ReportingInterval: usage.DefaultCollectionInterval,
 		},
-		dbprefix.Metrics(),
+		dbnames.Metrics,
 		UsageExporter,
 		set.Logger,
 	)
@@ -94,7 +94,7 @@ func createDefaultConfig() component.Config {
 		QueueBatchConfig: configoptional.Some(exporterhelper.NewDefaultQueueConfig()),
 		DSN:              "tcp://localhost:9000",
 		EnableExpHist:    false,
-		Database:         dbprefix.Metrics(),
+		Database:         dbnames.Metrics,
 		SamplesTable:     "distributed_samples_v4",
 		TimeSeriesTable:  "distributed_time_series_v4",
 		ExpHistTable:     "distributed_exp_hist",

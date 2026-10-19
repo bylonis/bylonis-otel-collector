@@ -20,9 +20,6 @@ FROM debian:bookworm-slim
 # define arguments and default values
 ARG USER_UID=10001
 
-# transitional alias for deployments that still call /signoz-schema-migrator
-RUN ln -s /bylonis-schema-migrator /signoz-schema-migrator
-
 # create a non-root user for running the migrator
 USER ${USER_UID}
 

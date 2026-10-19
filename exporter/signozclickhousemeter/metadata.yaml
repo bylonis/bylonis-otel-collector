@@ -1,4 +1,4 @@
-type: signozclickhousemeter
+type: bylonisclickhousemeter
 
 status:
   class: exporter

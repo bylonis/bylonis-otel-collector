@@ -46,7 +46,7 @@ func TestLoadConfig(t *testing.T) {
 		wantMetricsFlushInterval           time.Duration
 		wantMaxServicesToTrack             int
 		wantMaxOperationsToTrackPerService int
-		wantLegacyMetricNames              bool
+		wantLegacyMetricNames              *bool
 	}{
 		{
 			configFile:                         "config-2-pipelines.yaml",
@@ -56,7 +56,6 @@ func TestLoadConfig(t *testing.T) {
 			wantMetricsFlushInterval:           30 * time.Second,
 			wantMaxServicesToTrack:             256,
 			wantMaxOperationsToTrackPerService: 2048,
-			wantLegacyMetricNames:              true,
 		},
 		{
 			configFile:                         "config-3-pipelines.yaml",
@@ -66,7 +65,6 @@ func TestLoadConfig(t *testing.T) {
 			wantMetricsFlushInterval:           60 * time.Second,
 			wantMaxServicesToTrack:             256,
 			wantMaxOperationsToTrackPerService: 2048,
-			wantLegacyMetricNames:              true,
 		},
 		{
 			configFile:          "config-full.yaml",
@@ -89,7 +87,7 @@ func TestLoadConfig(t *testing.T) {
 			wantMetricsFlushInterval:           60 * time.Second,
 			wantMaxServicesToTrack:             512,
 			wantMaxOperationsToTrackPerService: 69420,
-			wantLegacyMetricNames:              false,
+			wantLegacyMetricNames:              func() *bool { b := false; return &b }(),
 		},
 	}
 	for _, tc := range testcases {
@@ -154,4 +152,11 @@ func TestGetTimeBucketInterval(t *testing.T) {
 	// Should return configured value when set to non-zero
 	cfg.TimeBucketInterval = 2 * time.Minute
 	assert.Equal(t, 2*time.Minute, cfg.GetTimeBucketInterval())
+}
+
+func TestValidateLegacyMetricNames(t *testing.T) {
+	no, yes := false, true
+	assert.NoError(t, (&Config{}).Validate())
+	assert.NoError(t, (&Config{LegacyMetricNames: &no}).Validate())
+	assert.ErrorIs(t, (&Config{LegacyMetricNames: &yes}).Validate(), errLegacyMetricNames)
 }

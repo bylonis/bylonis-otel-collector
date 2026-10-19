@@ -33,8 +33,8 @@ func TestLogsSizeWithExcludedSigNozResources(t *testing.T) {
 		// 20 bytes
 		plogsgen.WithResourceAttributeStringValue("Lorem ipsum euismod."),
 	)
-	// adding signoz resource shouldn't affect the calculation
-	logs.ResourceLogs().At(0).Resource().Attributes().PutStr("signoz.workspace.internal.test", "signoz-test")
+	// adding bylonis.workspace resource shouldn't affect the calculation
+	logs.ResourceLogs().At(0).Resource().Attributes().PutStr("bylonis.workspace.internal.test", "bylonis-test")
 
 	meter := NewLogs(zap.NewNop())
 	size := meter.Size(logs)

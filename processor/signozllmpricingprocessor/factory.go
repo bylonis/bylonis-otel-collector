@@ -11,7 +11,7 @@ import (
 
 var processorCapabilities = consumer.Capabilities{MutatesData: true}
 
-const typeStr = "signozllmpricing"
+const typeStr = "bylonisllmpricing"
 
 // NewFactory returns the component factory for signozllmpricingprocessor.
 func NewFactory() processor.Factory {

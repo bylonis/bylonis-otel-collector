@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signoz_health_check")
+	Type      = component.MustNewType("bylonis_health_check")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/extension/healthcheckextension"
 )
 

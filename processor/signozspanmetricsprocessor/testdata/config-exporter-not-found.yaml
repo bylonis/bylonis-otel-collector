@@ -21,7 +21,7 @@ exporters:
 
 processors:
   batch:
-  signozspanmetrics:
+  bylonisspanmetrics:
     metrics_exporter: prometheus
 
 service:
@@ -30,7 +30,7 @@ service:
       receivers: [jaeger]
       # spanmetrics will pass on span data untouched to next processor
       # while also accumulating metrics to be sent to the configured 'prometheus' exporter.
-      processors: [signozspanmetrics, batch]
+      processors: [bylonisspanmetrics, batch]
       exporters: [otlp]
 
     metrics:

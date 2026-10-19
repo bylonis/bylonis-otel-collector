@@ -15,7 +15,6 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.uber.org/zap"
 
-	"github.com/bylonis/bylonis-otel-collector/pkg/legacynames"
 	"github.com/bylonis/bylonis-otel-collector/pkg/metering"
 	v1 "github.com/bylonis/bylonis-otel-collector/pkg/metering/v1"
 	"github.com/google/uuid"
@@ -52,6 +51,9 @@ func newDimensionsMap(cfgDims []Dimension) map[string]struct{} {
 // initialize the signozmeterconnector
 func newConnector(logger *zap.Logger, settings connector.Settings, config component.Config) (*meterConnector, error) {
 	cfg := config.(*Config)
+	if cfg.LegacyMetricNames != nil {
+		logger.Warn("legacy_metric_names is ignored since v1.0 and will be rejected in a later release; remove it from the config")
+	}
 
 	meterTelemetry, err := newMeterTelemetry(settings)
 	if err != nil {
@@ -180,10 +182,6 @@ func (meterconnector *meterConnector) buildMetrics() pmetric.Metrics {
 		meterconnector.collectLogMeterMetrics(scopeMetrics, meterMetrics, timestamp)
 		meterconnector.collectTraceMeterMetrics(scopeMetrics, meterMetrics, timestamp)
 		meterconnector.collectMetricMeterMetrics(scopeMetrics, meterMetrics, timestamp)
-
-		if meterconnector.config.LegacyMetricNames {
-			legacynames.AppendLegacyCopies(scopeMetrics.Metrics())
-		}
 	}
 
 	return metrics

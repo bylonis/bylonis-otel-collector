@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signozlogspipeline")
+	Type      = component.MustNewType("bylonislogspipeline")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor"
 )
 

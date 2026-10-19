@@ -32,8 +32,8 @@ func TestTracesSizeWithNoEventAndSigNozResource(t *testing.T) {
 		ptracesgen.WithSpanKind(ptrace.SpanKindProducer),
 		ptracesgen.WithResourceAttributeStringValue("test"),
 	)
-	// adding signoz resource attribute shouldn't affect the calculation
-	traces.ResourceSpans().At(0).Resource().Attributes().PutStr("signoz.workspace.internal.test", "signoz-test")
+	// adding bylonis.workspace resource attribute shouldn't affect the calculation
+	traces.ResourceSpans().At(0).Resource().Attributes().PutStr("bylonis.workspace.internal.test", "bylonis-test")
 
 	meter := NewTraces(zap.NewNop())
 	size := meter.Size(traces)

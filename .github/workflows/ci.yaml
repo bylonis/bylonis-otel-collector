@@ -47,6 +47,5 @@ jobs:
       # Skipped tests fail or flake in upstream v0.144.5 too:
       #   TestExporterPushLogsData    always (expects a usage insert that never happens)
       #   TestExporterPushTracesData  flaky (same usage expectation, timing)
-      #   TestMetricsToMetrics        flaky (custom_dimensions flush timing)
       - name: Test
-        run: go test -count=1 -timeout 30m -skip 'TestExporterPushLogsData|TestExporterPushTracesData|TestMetricsToMetrics' ./...
+        run: go test -count=1 -timeout 30m -skip 'TestExporterPushLogsData|TestExporterPushTracesData' ./...

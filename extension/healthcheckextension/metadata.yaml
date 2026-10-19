@@ -1,4 +1,4 @@
-type: signoz_health_check
+type: bylonis_health_check
 
 status:
   class: extension

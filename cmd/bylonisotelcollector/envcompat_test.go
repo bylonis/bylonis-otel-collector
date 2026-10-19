@@ -8,8 +8,6 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zaptest/observer"
 )
 
 func newTestFlags() *flag.FlagSet {
@@ -28,12 +26,12 @@ func lookupFrom(env map[string]string) func(string) (string, bool) {
 
 func TestSetFlagsFromEnv(t *testing.T) {
 	tests := []struct {
-		name       string
-		env        map[string]string
-		args       []string
-		wantDSN    string
-		wantRepl   string
-		wantWarned bool
+		name     string
+		env      map[string]string
+		args     []string
+		wantDSN  string
+		wantRepl string
+		wantErr  string
 	}{
 		{
 			name:     "defaults when nothing is set",
@@ -47,14 +45,12 @@ func TestSetFlagsFromEnv(t *testing.T) {
 			wantRepl: "true",
 		},
 		{
-			name:       "legacy signoz variable with warning",
-			env:        map[string]string{"SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION": "false"},
-			wantDSN:    "tcp://0.0.0.0:9001",
-			wantRepl:   "false",
-			wantWarned: true,
+			name:    "upstream variable fails",
+			env:     map[string]string{"SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION": "false"},
+			wantErr: "SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION is no longer read (removed in v1.0): rename it to BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION",
 		},
 		{
-			name: "bylonis wins over signoz",
+			name: "upstream variable ignored next to the bylonis one",
 			env: map[string]string{
 				"BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_DSN": "tcp://new:9000",
 				"SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN":  "tcp://old:9000",
@@ -63,14 +59,12 @@ func TestSetFlagsFromEnv(t *testing.T) {
 			wantRepl: "true",
 		},
 		{
-			name: "empty bylonis variable falls back to signoz",
+			name: "empty bylonis variable with an upstream one fails",
 			env: map[string]string{
 				"BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_DSN": "",
 				"SIGNOZ_OTEL_COLLECTOR_CLICKHOUSE_DSN":  "tcp://old:9000",
 			},
-			wantDSN:    "tcp://old:9000",
-			wantRepl:   "true",
-			wantWarned: true,
+			wantErr: "rename it to BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_DSN",
 		},
 		{
 			name:     "command line wins over env",
@@ -85,13 +79,16 @@ func TestSetFlagsFromEnv(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			flags := newTestFlags()
 			require.NoError(t, flags.Parse(tt.args))
-			core, logs := observer.New(zap.WarnLevel)
 
-			require.NoError(t, setFlagsFromEnv(flags, lookupFrom(tt.env), zap.New(core)))
+			err := setFlagsFromEnv(flags, lookupFrom(tt.env))
+			if tt.wantErr != "" {
+				assert.ErrorContains(t, err, tt.wantErr)
+				return
+			}
+			require.NoError(t, err)
 
 			assert.Equal(t, tt.wantDSN, flags.Lookup("clickhouse-dsn").Value.String())
 			assert.Equal(t, tt.wantRepl, flags.Lookup("clickhouse-replication").Value.String())
-			assert.Equal(t, tt.wantWarned, logs.Len() > 0)
 		})
 	}
 }
@@ -100,7 +97,7 @@ func TestSetFlagsFromEnvInvalidValue(t *testing.T) {
 	flags := newTestFlags()
 	require.NoError(t, flags.Parse(nil))
 
-	err := setFlagsFromEnv(flags, lookupFrom(map[string]string{"BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION": "maybe"}), zap.NewNop())
+	err := setFlagsFromEnv(flags, lookupFrom(map[string]string{"BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION": "maybe"}))
 
 	assert.ErrorContains(t, err, "BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION")
 }
@@ -114,7 +111,7 @@ func TestSetFlagsFromEnvOpAMPToken(t *testing.T) {
 	require.NoError(t, flags.Parse(nil))
 
 	env := map[string]string{"BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN": "s3cret-token"}
-	require.NoError(t, setFlagsFromEnv(flags, lookupFrom(env), zap.NewNop()))
+	require.NoError(t, setFlagsFromEnv(flags, lookupFrom(env)))
 
 	assert.Equal(t, "s3cret-token", config.Collector.OpAMPToken)
 }

@@ -16,7 +16,7 @@ package clickhousetracesexporter
 
 import (
 	"context"
-	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbnames"
 
 	"sync"
 
@@ -28,8 +28,8 @@ import (
 	"go.uber.org/zap"
 )
 
-// defaultTraceDatabase follows BYLONIS_DB_PREFIX.
-var defaultTraceDatabase = dbprefix.Traces()
+// defaultTraceDatabase is the database the exporter writes to by default.
+var defaultTraceDatabase = dbnames.Traces
 
 const (
 	hasIsRemoteMask          uint32 = 0x00000100

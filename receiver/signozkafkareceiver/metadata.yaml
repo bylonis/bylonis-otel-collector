@@ -1,4 +1,4 @@
-type: signozkafkareceiver
+type: byloniskafkareceiver
 
 status:
   class: receiver
