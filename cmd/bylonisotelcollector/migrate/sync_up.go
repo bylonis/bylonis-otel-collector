@@ -110,7 +110,7 @@ func (cmd *syncUp) SyncUp(ctx context.Context) error {
 	}
 
 	cmd.logger.Info("running sync migrations")
-	err = cmd.run(ctx, schemamigrator.TracesMigrations, schemamigrator.SignozTracesDB)
+	err = cmd.run(ctx, schemamigrator.TracesMigrations, schemamigrator.TracesDB)
 	if err != nil {
 		return err
 	}
@@ -120,27 +120,27 @@ func (cmd *syncUp) SyncUp(ctx context.Context) error {
 		logsMigrations = schemamigrator.LogsMigrationsV2
 	}
 
-	err = cmd.run(ctx, logsMigrations, schemamigrator.SignozLogsDB)
+	err = cmd.run(ctx, logsMigrations, schemamigrator.LogsDB)
 	if err != nil {
 		return err
 	}
 
-	err = cmd.run(ctx, schemamigrator.MetricsMigrations, schemamigrator.SignozMetricsDB)
+	err = cmd.run(ctx, schemamigrator.MetricsMigrations, schemamigrator.MetricsDB)
 	if err != nil {
 		return err
 	}
 
-	err = cmd.run(ctx, schemamigrator.MetadataMigrations, schemamigrator.SignozMetadataDB)
+	err = cmd.run(ctx, schemamigrator.MetadataMigrations, schemamigrator.MetadataDB)
 	if err != nil {
 		return err
 	}
 
-	err = cmd.run(ctx, schemamigrator.AnalyticsMigrations, schemamigrator.SignozAnalyticsDB)
+	err = cmd.run(ctx, schemamigrator.AnalyticsMigrations, schemamigrator.AnalyticsDB)
 	if err != nil {
 		return err
 	}
 
-	err = cmd.run(ctx, schemamigrator.MeterMigrations, schemamigrator.SignozMeterDB)
+	err = cmd.run(ctx, schemamigrator.MeterMigrations, schemamigrator.MeterDB)
 	if err != nil {
 		return err
 	}
@@ -150,9 +150,9 @@ func (cmd *syncUp) SyncUp(ctx context.Context) error {
 
 func (cmd *syncUp) runSquashedMigrations(ctx context.Context) error {
 	squashedMigrations := map[string][]schemamigrator.SchemaMigrationRecord{
-		schemamigrator.SignozLogsDB:    schemamigrator.CustomRetentionLogsMigrations,
-		schemamigrator.SignozMetricsDB: schemamigrator.SquashedMetricsMigrations,
-		schemamigrator.SignozTracesDB:  schemamigrator.SquashedTracesMigrations,
+		schemamigrator.LogsDB:    schemamigrator.CustomRetentionLogsMigrations,
+		schemamigrator.MetricsDB: schemamigrator.SquashedMetricsMigrations,
+		schemamigrator.TracesDB:  schemamigrator.SquashedTracesMigrations,
 	}
 
 	for database, migrations := range squashedMigrations {

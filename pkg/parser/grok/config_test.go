@@ -17,8 +17,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	signozstanzaentry "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/entry"
-	signozstanzahelper "github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor/stanza/operator/helper"
+	bylonisstanzaentry "github.com/bylonis/bylonis-otel-collector/processor/bylonislogspipelineprocessor/stanza/entry"
+	bylonisstanzahelper "github.com/bylonis/bylonis-otel-collector/processor/bylonislogspipelineprocessor/stanza/operator/helper"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/entry"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/pkg/stanza/operator/operatortest"
 )
@@ -44,7 +44,7 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "parse_from_simple",
 				Expect: func() *Config {
 					cfg := NewConfig()
-					cfg.ParseFrom = signozstanzaentry.Field{FieldInterface: signozstanzaentry.NewBodyField("from")}
+					cfg.ParseFrom = bylonisstanzaentry.Field{FieldInterface: bylonisstanzaentry.NewBodyField("from")}
 					return cfg
 				}(),
 			},
@@ -52,7 +52,7 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "parse_to_simple",
 				Expect: func() *Config {
 					cfg := NewConfig()
-					cfg.ParseTo = signozstanzaentry.RootableField{Field: signozstanzaentry.Field{FieldInterface: signozstanzaentry.NewBodyField("log")}}
+					cfg.ParseTo = bylonisstanzaentry.RootableField{Field: bylonisstanzaentry.Field{FieldInterface: bylonisstanzaentry.NewBodyField("log")}}
 					return cfg
 				}(),
 			},
@@ -68,8 +68,8 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "timestamp",
 				Expect: func() *Config {
 					cfg := NewConfig()
-					parseField := signozstanzaentry.Field{FieldInterface: signozstanzaentry.NewBodyField("timestamp_field")}
-					newTime := signozstanzahelper.TimeParser{
+					parseField := bylonisstanzaentry.Field{FieldInterface: bylonisstanzaentry.NewBodyField("timestamp_field")}
+					newTime := bylonisstanzahelper.TimeParser{
 						LayoutType: "strptime",
 						Layout:     "%Y-%m-%d",
 						ParseFrom:  &parseField,
@@ -82,8 +82,8 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "severity",
 				Expect: func() *Config {
 					cfg := NewConfig()
-					parseField := signozstanzaentry.Field{FieldInterface: signozstanzaentry.NewBodyField("severity_field")}
-					severityParser := signozstanzahelper.NewSeverityConfig()
+					parseField := bylonisstanzaentry.Field{FieldInterface: bylonisstanzaentry.NewBodyField("severity_field")}
+					severityParser := bylonisstanzahelper.NewSeverityConfig()
 					severityParser.ParseFrom = &parseField
 					mapping := map[string]interface{}{
 						"critical": "5xx",
@@ -109,8 +109,8 @@ func TestParserGoldenConfig(t *testing.T) {
 				Expect: func() *Config {
 					cfg := NewConfig()
 					cfg.Pattern = "a=%{NOTSPACE:data}"
-					parseField := signozstanzaentry.Field{FieldInterface: signozstanzaentry.NewBodyField("logger_name_field")}
-					loggerNameParser := signozstanzahelper.NewScopeNameParser()
+					parseField := bylonisstanzaentry.Field{FieldInterface: bylonisstanzaentry.NewBodyField("logger_name_field")}
+					loggerNameParser := bylonisstanzahelper.NewScopeNameParser()
 					loggerNameParser.ParseFrom = parseField
 					cfg.ScopeNameParser = &loggerNameParser
 					return cfg
@@ -120,7 +120,7 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "parse_to_attributes",
 				Expect: func() *Config {
 					p := NewConfig()
-					p.ParseTo = signozstanzaentry.RootableField{Field: signozstanzaentry.Field{FieldInterface: entry.NewAttributeField()}}
+					p.ParseTo = bylonisstanzaentry.RootableField{Field: bylonisstanzaentry.Field{FieldInterface: entry.NewAttributeField()}}
 					return p
 				}(),
 			},
@@ -128,7 +128,7 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "parse_to_body",
 				Expect: func() *Config {
 					p := NewConfig()
-					p.ParseTo = signozstanzaentry.RootableField{Field: signozstanzaentry.Field{FieldInterface: signozstanzaentry.NewBodyField()}}
+					p.ParseTo = bylonisstanzaentry.RootableField{Field: bylonisstanzaentry.Field{FieldInterface: bylonisstanzaentry.NewBodyField()}}
 					return p
 				}(),
 			},
@@ -136,7 +136,7 @@ func TestParserGoldenConfig(t *testing.T) {
 				Name: "parse_to_resource",
 				Expect: func() *Config {
 					p := NewConfig()
-					p.ParseTo = signozstanzaentry.RootableField{Field: signozstanzaentry.Field{FieldInterface: entry.NewResourceField()}}
+					p.ParseTo = bylonisstanzaentry.RootableField{Field: bylonisstanzaentry.Field{FieldInterface: entry.NewResourceField()}}
 					return p
 				}(),
 			},

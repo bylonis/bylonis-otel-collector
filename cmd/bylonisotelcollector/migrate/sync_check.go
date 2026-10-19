@@ -101,13 +101,13 @@ func (cmd *syncCheck) Run(ctx context.Context) error {
 func (cmd *syncCheck) Check(ctx context.Context) error {
 	tracesLastSyncMigrationID, err := cmd.getLastSyncMigration(schemamigrator.TracesMigrations)
 	if err == nil {
-		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.SignozTracesDB, tracesLastSyncMigrationID, schemamigrator.FinishedStatus)
+		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.TracesDB, tracesLastSyncMigrationID, schemamigrator.FinishedStatus)
 		if err != nil {
 			return err
 		}
 
 		if !ok {
-			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", tracesLastSyncMigrationID, schemamigrator.SignozTracesDB)
+			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", tracesLastSyncMigrationID, schemamigrator.TracesDB)
 		}
 	}
 
@@ -118,61 +118,61 @@ func (cmd *syncCheck) Check(ctx context.Context) error {
 
 	logsLastSyncMigrationID, err := cmd.getLastSyncMigration(logsMigrations)
 	if err == nil {
-		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.SignozLogsDB, logsLastSyncMigrationID, schemamigrator.FinishedStatus)
+		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.LogsDB, logsLastSyncMigrationID, schemamigrator.FinishedStatus)
 		if err != nil {
 			return err
 		}
 
 		if !ok {
-			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", logsLastSyncMigrationID, schemamigrator.SignozLogsDB)
+			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", logsLastSyncMigrationID, schemamigrator.LogsDB)
 		}
 	}
 
 	metricsLastSyncMigrationID, err := cmd.getLastSyncMigration(schemamigrator.MetricsMigrations)
 	if err == nil {
-		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.SignozMetricsDB, metricsLastSyncMigrationID, schemamigrator.FinishedStatus)
+		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.MetricsDB, metricsLastSyncMigrationID, schemamigrator.FinishedStatus)
 		if err != nil {
 			return err
 		}
 
 		if !ok {
-			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", metricsLastSyncMigrationID, schemamigrator.SignozMetricsDB)
+			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", metricsLastSyncMigrationID, schemamigrator.MetricsDB)
 		}
 	}
 
 	metadataLastSyncMigrationID, err := cmd.getLastSyncMigration(schemamigrator.MetadataMigrations)
 	if err == nil {
-		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.SignozMetadataDB, metadataLastSyncMigrationID, schemamigrator.FinishedStatus)
+		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.MetadataDB, metadataLastSyncMigrationID, schemamigrator.FinishedStatus)
 		if err != nil {
 			return err
 		}
 
 		if !ok {
-			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", metadataLastSyncMigrationID, schemamigrator.SignozMetadataDB)
+			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", metadataLastSyncMigrationID, schemamigrator.MetadataDB)
 		}
 	}
 
 	analyticsLastSyncMigrationID, err := cmd.getLastSyncMigration(schemamigrator.AnalyticsMigrations)
 	if err == nil {
-		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.SignozAnalyticsDB, analyticsLastSyncMigrationID, schemamigrator.FinishedStatus)
+		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.AnalyticsDB, analyticsLastSyncMigrationID, schemamigrator.FinishedStatus)
 		if err != nil {
 			return err
 		}
 
 		if !ok {
-			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", analyticsLastSyncMigrationID, schemamigrator.SignozAnalyticsDB)
+			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", analyticsLastSyncMigrationID, schemamigrator.AnalyticsDB)
 		}
 	}
 
 	meterLastSyncMigrationID, err := cmd.getLastSyncMigration(schemamigrator.MeterMigrations)
 	if err == nil {
-		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.SignozMeterDB, meterLastSyncMigrationID, schemamigrator.FinishedStatus)
+		ok, err := cmd.migrationManager.CheckMigrationStatus(ctx, schemamigrator.MeterDB, meterLastSyncMigrationID, schemamigrator.FinishedStatus)
 		if err != nil {
 			return err
 		}
 
 		if !ok {
-			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", meterLastSyncMigrationID, schemamigrator.SignozMeterDB)
+			return fmt.Errorf("migration with ID %d for database '%s' has not been completed", meterLastSyncMigrationID, schemamigrator.MeterDB)
 		}
 	}
 
