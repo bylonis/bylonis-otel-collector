@@ -560,10 +560,10 @@ func Test_newStructuredSpanV3(t *testing.T) {
 				AttributesNumber: map[string]float64{},
 				AttributesBool:   map[string]bool{},
 				ResourcesString: map[string]string{
-					"mymap.map_double":               "20.5",
-					"mymap.map_key":                  "map_val",
-					"service.name":                   "test_service",
-					"num":                            "10",
+					"mymap.map_double":                "20.5",
+					"mymap.map_key":                   "map_val",
+					"service.name":                    "test_service",
+					"num":                             "10",
 					"bylonis.workspace.internal.test": "test_internal",
 				},
 				BillableResourcesString: map[string]string{
