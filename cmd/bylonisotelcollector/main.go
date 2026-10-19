@@ -13,6 +13,7 @@ import (
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/migrate"
 	"github.com/bylonis/bylonis-otel-collector/components"
 	"github.com/bylonis/bylonis-otel-collector/constants"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbnames"
 	"github.com/bylonis/bylonis-otel-collector/pkg/previewserver"
 	"github.com/bylonis/bylonis-otel-collector/service"
 	"github.com/bylonis/bylonis-otel-collector/signozcol"
@@ -34,7 +35,10 @@ func main() {
 		},
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			return setFlagsFromEnv(cmd.Flags(), os.LookupEnv, logger)
+			if err := dbnames.CheckEnv(os.LookupEnv); err != nil {
+				return err
+			}
+			return setFlagsFromEnv(cmd.Flags(), os.LookupEnv)
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			collectorConfig := config.Collector.Config

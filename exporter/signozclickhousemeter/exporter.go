@@ -10,7 +10,6 @@ import (
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	pkgfingerprint "github.com/bylonis/bylonis-otel-collector/internal/common/fingerprint"
-	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/pdata/pmetric"
@@ -54,7 +53,7 @@ func NewClickHouseExporter(logger *zap.Logger, config component.Config) (*clickh
 		return nil, err
 	}
 
-	conn, err := dbprefix.Open(connOptions)
+	conn, err := clickhouse.Open(connOptions)
 	if err != nil {
 		return nil, err
 	}

@@ -10,7 +10,7 @@ import (
 	"go.opentelemetry.io/collector/component/componenttest"
 )
 
-var typ = component.MustNewType("signoztransform")
+var typ = component.MustNewType("bylonistransform")
 
 func TestComponentFactoryType(t *testing.T) {
 	require.Equal(t, typ, NewFactory().Type())

@@ -15,6 +15,7 @@
 package signozspanmetricsprocessor
 
 import (
+	"errors"
 	"time"
 
 	"go.opentelemetry.io/collector/featuregate"
@@ -24,7 +25,7 @@ import (
 const (
 	delta                  = "AGGREGATION_TEMPORALITY_DELTA"
 	cumulative             = "AGGREGATION_TEMPORALITY_CUMULATIVE"
-	dropSanitizationGateID = "processor.signozspanmetrics.PermissiveLabelSanitization"
+	dropSanitizationGateID = "processor.bylonisspanmetrics.PermissiveLabelSanitization"
 )
 
 var dropSanitizationFeatureGate *featuregate.Gate
@@ -99,11 +100,24 @@ type Config struct {
 	// Default is 24 hours if not set.
 	SkipSpansOlderThan time.Duration `mapstructure:"skip_spans_older_than"`
 
-	// LegacyMetricNames also emits every metric under its SigNoz name
-	// (signoz_latency, signoz_calls_total…, with signoz.collector.id) next to the
-	// bylonis one, for dashboards, alerts and UIs that still query the old names.
-	// Default true while they move to the new names (bylonis/bylonis#47).
-	LegacyMetricNames bool `mapstructure:"legacy_metric_names"`
+	// LegacyMetricNames is the legacy_metric_names option, removed in v1.0:
+	// only the bylonis_* names are emitted. It is still parsed so that configs
+	// with "legacy_metric_names: false" keep loading (with a warning); true
+	// fails validation.
+	//
+	// Deprecated: remove the option from the config.
+	LegacyMetricNames *bool `mapstructure:"legacy_metric_names"`
+}
+
+// errLegacyMetricNames rejects legacy_metric_names: true.
+var errLegacyMetricNames = errors.New("legacy_metric_names was removed in v1.0: only the bylonis_* metric names are emitted; remove the option")
+
+// Validate checks the config.
+func (c *Config) Validate() error {
+	if c.LegacyMetricNames != nil && *c.LegacyMetricNames {
+		return errLegacyMetricNames
+	}
+	return nil
 }
 
 // GetAggregationTemporality converts the string value given in the config into a AggregationTemporality.

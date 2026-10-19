@@ -65,7 +65,7 @@ type tailSamplingSpanProcessor struct {
 }
 
 const (
-	sourceFormat = "signoz_tail_sampling"
+	sourceFormat = "bylonis_tail_sampling"
 )
 
 // newTracesProcessor returns a processor.TracesProcessor that will perform tail sampling according to the given

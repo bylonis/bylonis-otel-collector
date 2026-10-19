@@ -11,7 +11,7 @@ import (
 	"github.com/ClickHouse/clickhouse-go/v2"
 	schema_migrator "github.com/bylonis/bylonis-otel-collector/cmd/bylonisschemamigrator/schema_migrator"
 	"github.com/bylonis/bylonis-otel-collector/constants"
-	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
+	"github.com/bylonis/bylonis-otel-collector/pkg/dbnames"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -34,6 +34,10 @@ func getLogger() *zap.Logger {
 }
 
 func main() {
+	if err := dbnames.CheckEnv(os.LookupEnv); err != nil {
+		log.Fatal(err)
+	}
+
 	cmd := &cobra.Command{
 		Use:   "bylonis-schema-migrator",
 		Short: "ByLonis Schema Migrator",
@@ -128,7 +132,7 @@ func registerSyncMigrate(cmd *cobra.Command) {
 			}
 			logger.Info("Parsed DSN", zap.Any("opts", opts))
 
-			conn, err := dbprefix.Open(opts)
+			conn, err := clickhouse.Open(opts)
 			if err != nil {
 				return fmt.Errorf("failed to open connection: %w", err)
 			}
@@ -226,7 +230,7 @@ func registerAsyncMigrate(cmd *cobra.Command) {
 			}
 			logger.Info("Parsed DSN", zap.Any("opts", opts))
 
-			conn, err := dbprefix.Open(opts)
+			conn, err := clickhouse.Open(opts)
 			if err != nil {
 				return fmt.Errorf("failed to open connection: %w", err)
 			}

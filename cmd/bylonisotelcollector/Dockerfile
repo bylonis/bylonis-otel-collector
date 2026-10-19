@@ -22,10 +22,6 @@ FROM debian:bookworm-slim
 # add ca-certificates in case you need them
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
-# transitional alias: existing deployments run /signoz-otel-collector in their compose
-# commands. Remove once every deployment calls /bylonis-otel-collector.
-RUN ln -s /bylonis-otel-collector /signoz-otel-collector
-
 # define arguments and default values
 ARG USER_UID=10001
 

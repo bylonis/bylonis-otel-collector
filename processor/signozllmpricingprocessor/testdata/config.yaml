@@ -1,5 +1,5 @@
 # Full valid config — mirrors the spec.
-signozllmpricing:
+bylonisllmpricing:
   attrs:
     model: "gen_ai.request.model"
     in: "gen_ai.usage.input_tokens"
@@ -32,7 +32,7 @@ signozllmpricing:
     total: "_signoz.gen_ai.total_cost"
 
 # Minimal valid — only total output attr required.
-signozllmpricing/minimal:
+bylonisllmpricing/minimal:
   attrs:
     model: "gen_ai.request.model"
     in: "gen_ai.usage.input_tokens"
@@ -50,7 +50,7 @@ signozllmpricing/minimal:
     total: "_signoz.gen_ai.total_cost"
 
 # Invalid: missing attrs.model.
-signozllmpricing/no_model_attr:
+bylonisllmpricing/no_model_attr:
   attrs:
     model: ""
     in: "gen_ai.usage.input_tokens"
@@ -68,7 +68,7 @@ signozllmpricing/no_model_attr:
     total: "_signoz.gen_ai.total_cost"
 
 # Invalid: missing pattern (empty list).
-signozllmpricing/no_pattern:
+bylonisllmpricing/no_pattern:
   attrs:
     model: "gen_ai.request.model"
   default_pricing:
@@ -84,7 +84,7 @@ signozllmpricing/no_pattern:
     total: "_signoz.gen_ai.total_cost"
 
 # Invalid: unknown cache.mode.
-signozllmpricing/bad_cache_mode:
+bylonisllmpricing/bad_cache_mode:
   attrs:
     model: "gen_ai.request.model"
   default_pricing:
@@ -100,7 +100,7 @@ signozllmpricing/bad_cache_mode:
     total: "_signoz.gen_ai.total_cost"
 
 # Invalid: missing output_attrs.total.
-signozllmpricing/no_total_output:
+bylonisllmpricing/no_total_output:
   attrs:
     model: "gen_ai.request.model"
   default_pricing:

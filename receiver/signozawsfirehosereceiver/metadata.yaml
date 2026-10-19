@@ -1,4 +1,4 @@
-type: signozawsfirehose
+type: bylonisawsfirehose
 
 status:
   class: receiver

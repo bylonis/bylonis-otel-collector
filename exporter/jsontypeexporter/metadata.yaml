@@ -1,4 +1,4 @@
-type: jsontypeexporter
+type: bylonisjsontypeexporter
 status:
   class: exporter
   stability:

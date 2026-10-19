@@ -171,8 +171,8 @@ func TestGetResourceAttributesByte(t *testing.T) {
 		pass      bool
 	}{
 		{
-			name:      "add_signoz_resource_attribute",
-			attribute: "signoz.workspace.internal.test",
+			name:      "add_bylonis_workspace_resource_attribute",
+			attribute: "bylonis.workspace.internal.test",
 			pass:      true,
 		},
 		{

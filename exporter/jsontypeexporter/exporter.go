@@ -11,7 +11,6 @@ import (
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/ClickHouse/clickhouse-go/v2/lib/driver"
 	"github.com/bylonis/bylonis-otel-collector/constants"
-	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/bylonis/bylonis-otel-collector/pkg/keycheck"
 	"github.com/bylonis/bylonis-otel-collector/utils"
 	lru "github.com/hashicorp/golang-lru/v2"
@@ -49,7 +48,7 @@ func newExporter(cfg Config, set exporter.Settings) (*jsonTypeExporter, error) {
 		return nil, fmt.Errorf("failed to parse ClickHouse DSN: %w", err)
 	}
 
-	conn, err := dbprefix.Open(connOptions)
+	conn, err := clickhouse.Open(connOptions)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to ClickHouse: %w", err)
 	}

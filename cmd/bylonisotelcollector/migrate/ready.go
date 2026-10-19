@@ -10,7 +10,6 @@ import (
 
 	"github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
-	"github.com/bylonis/bylonis-otel-collector/pkg/dbprefix"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -58,7 +57,7 @@ func newReady(dsn string, cluster string, timeout time.Duration, logger *zap.Log
 		return nil, err
 	}
 
-	conn, err := dbprefix.Open(opts)
+	conn, err := clickhouse.Open(opts)
 	if err != nil {
 		return nil, err
 	}
@@ -161,7 +160,7 @@ func (r *ready) CheckClickhouse(ctx context.Context) error {
 		// cannot pass all the address here as this is used for failover/ load-balancing. at any point of them one is selected and connection is established
 		// ref: https://github.com/ClickHouse/clickhouse-go/blob/main/clickhouse.go#L275
 		connectionOpts.Addr = []string{addrPort.String()}
-		conn, err := dbprefix.Open(connectionOpts)
+		conn, err := clickhouse.Open(connectionOpts)
 		if err != nil {
 			return err
 		}

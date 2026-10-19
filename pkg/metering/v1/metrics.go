@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	excludeRegex = regexp.MustCompile("^(bylonis|signoz|otelcol).*")
+	excludeRegex = regexp.MustCompile("^(bylonis|otelcol).*")
 )
 
 type metrics struct {

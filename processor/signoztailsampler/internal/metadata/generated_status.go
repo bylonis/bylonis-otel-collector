@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signoz_tail_sampling")
+	Type      = component.MustNewType("bylonis_tail_sampling")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/processor/signoztailsampler"
 )
 

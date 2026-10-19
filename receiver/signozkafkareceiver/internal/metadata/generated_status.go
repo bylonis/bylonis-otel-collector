@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signozkafkareceiver")
+	Type      = component.MustNewType("byloniskafkareceiver")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"
 )
 

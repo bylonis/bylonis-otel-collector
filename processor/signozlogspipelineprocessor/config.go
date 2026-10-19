@@ -17,7 +17,7 @@ var _ component.Config = (*Config)(nil)
 
 func (cfg *Config) Validate() error {
 	if len(cfg.BaseConfig.Operators) == 0 {
-		return errors.New("no operators were configured for signozlogspipeline processor")
+		return errors.New("no operators were configured for bylonislogspipeline processor")
 	}
 	return nil
 }

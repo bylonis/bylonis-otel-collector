@@ -35,11 +35,15 @@ Every flag can be set with an env var named `BYLONIS_OTEL_COLLECTOR_<FLAG>`
 | `BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_DSN` | `tcp://0.0.0.0:9001` | ClickHouse used by `migrate` |
 | `BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_CLUSTER` | `cluster` | ClickHouse cluster name |
 | `BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION` | `true` | Replicated tables |
-| `BYLONIS_DB_PREFIX` | `bylonis` | Prefix of the database names: `<prefix>_traces`, `_metrics`, `_logs`, `_meter`, `_metadata`, `_analytics` |
 
-`BYLONIS_DB_PREFIX` must be set to the same value for the migrator and the
-collector. Apart from the database names, migrations, tables and queries don't
-change.
+The databases are always `bylonis_traces`, `bylonis_metrics`, `bylonis_logs`,
+`bylonis_meter`, `bylonis_metadata` and `bylonis_analytics`.
+
+The components built for ByLonis are named `bylonis*`: `bylonisspanmetrics`,
+`bylonismeter`, `bylonisclickhousemetrics`, `bylonisclickhousemeter`,
+`bylonislogspipeline`, `bylonistransform`, `bylonis_tail_sampling`,
+`bylonisllmpricing`, `byloniskafkareceiver`, `byloniskafkaexporter`,
+`bylonisawsfirehose`, `bylonisjsontypeexporter` and `bylonis_health_check`.
 
 ### Logs pipelines preview
 
@@ -69,18 +73,20 @@ opens the WebSocket connection; the backend rejects connections without the
 token it expects (`BYLONIS_OPAMP_TOKEN`). Without it, no header is sent and the
 log says so with a warning.
 
-### Compatibility with SigNoz deployments
+### Upgrading from a SigNoz deployment or a version before v1.0
 
-These keep working so an existing deployment can switch images; one whose
-databases still have the upstream names also sets `BYLONIS_DB_PREFIX=signoz`. They are deprecated and will be removed in a later
-release.
+v1.0 drops the compatibility with the upstream names that earlier versions
+kept. Before switching images, a deployment that still uses them has to:
 
-- `SIGNOZ_OTEL_COLLECTOR_*` env vars are read when the `BYLONIS_` one is unset,
-  with a warning in the log.
-- Components keep their `signoz*` names (`signozlogspipeline`,
-  `signozspanmetrics`, `signozclickhousemetrics`, `signozmeter`, ...). Each one is
-  also available with `bylonis` in its place (`bylonislogspipeline`, ...).
-- The images include `/signoz-otel-collector` and `/signoz-schema-migrator` as
-  symlinks to the new binaries.
-- SQL that still names the upstream databases is rewritten to the configured
-  prefix.
+| Before | Now | If it is left |
+|---|---|---|
+| `signoz*` component types (`signozspanmetrics`, `signozmeter`, `signoz_health_check`, ...) | `bylonis*` with the same suffix (`bylonisspanmetrics`, `bylonismeter`, `bylonis_health_check`, ...) | the config fails to load: `unknown type: "signozspanmetrics"` |
+| `SIGNOZ_OTEL_COLLECTOR_<FLAG>` env vars | `BYLONIS_OTEL_COLLECTOR_<FLAG>` | the collector doesn't start and names the variable to rename |
+| `BYLONIS_DB_PREFIX` (databases `signoz_*` or another prefix) | databases `bylonis_*`; unset the variable (`bylonis` is still accepted) | the collector and the migrator don't start |
+| SQL naming `signoz_traces`, `signoz_logs`, ... (rewritten until now) | the `bylonis_*` names | ClickHouse answers that the database doesn't exist |
+| `legacy_metric_names` in `bylonisspanmetrics` and `bylonismeter` (copies of the metrics as `signoz_*` and `signoz.meter.*`, with `signoz.collector.id`) | nothing: only the `bylonis_*` and `bylonis.meter.*` names, with `bylonis.collector.id` | `true` fails validation; `false` is ignored with a warning, and will be rejected in a later release |
+| `/signoz-otel-collector` and `/signoz-schema-migrator` in the images | `/bylonis-otel-collector`, `/bylonis-schema-migrator` | the container doesn't start: `no such file or directory` |
+
+The usage metering no longer skips metrics named `signoz*` or resource
+attributes `signoz.workspace.*`; it skips `bylonis*` metrics and
+`bylonis.workspace.*` attributes.

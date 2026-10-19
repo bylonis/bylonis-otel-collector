@@ -21,7 +21,7 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch_processor]
-      exporters: [signozclickhousemetrics]
+      exporters: [bylonisclickhousemetrics]
   telemetry:
       resource:
           service.instance.id: signozcol/testdata/invalid_config.yaml

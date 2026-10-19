@@ -51,7 +51,6 @@ func createDefaultConfig() component.Config {
 		EnableExpHistogram:             false,
 		MaxServicesToTrack:             maxNumberOfServicesToTrack,
 		MaxOperationsToTrackPerService: maxNumberOfOperationsToTrackPerService,
-		LegacyMetricNames:              true,
 	}
 }
 

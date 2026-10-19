@@ -39,7 +39,6 @@ import (
 	conventions "go.opentelemetry.io/collector/semconv/v1.6.1"
 	"go.uber.org/zap"
 
-	"github.com/bylonis/bylonis-otel-collector/pkg/legacynames"
 	"github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor/internal/cache"
 )
 
@@ -53,7 +52,8 @@ const (
 	metricKeySeparator      = string(byte(0))
 	traceIDKey              = "trace_id"
 
-	collectorID = legacynames.CollectorIDKey
+	// collectorID tags every series with the collector instance that built it.
+	collectorID = "bylonis.collector.id"
 
 	defaultDimensionsCacheSize = 1000
 	resourcePrefix             = "resource_"
@@ -261,6 +261,9 @@ func (h *exponentialHistogram) Observe(value float64) {
 func newProcessor(logger *zap.Logger, instanceID string, config component.Config, ticker *clock.Ticker) (*processorImp, error) {
 	logger.Info("Building signozspanmetricsprocessor with config", zap.Any("config", config))
 	pConfig := config.(*Config)
+	if pConfig.LegacyMetricNames != nil {
+		logger.Warn("legacy_metric_names is ignored since v1.0 and will be rejected in a later release; remove it from the config")
+	}
 
 	// Set default time bucket interval if not specified
 	if pConfig.TimeBucketInterval == 0 {
@@ -467,14 +470,14 @@ func (p *processorImp) Start(ctx context.Context, host component.Host) error {
 
 		availableMetricsExporters = append(availableMetricsExporters, k.String())
 
-		p.logger.Debug("Looking for signozspanmetrics exporter from available exporters",
-			zap.String("signozspanmetrics-exporter", p.config.MetricsExporter),
+		p.logger.Debug("Looking for bylonisspanmetrics exporter from available exporters",
+			zap.String("bylonisspanmetrics-exporter", p.config.MetricsExporter),
 			zap.Any("available-exporters", availableMetricsExporters),
 		)
 		for _, name := range exporterNames {
 			if k.String() == name {
 				p.metricsConsumer = append(p.metricsConsumer, metricsExp)
-				p.logger.Info("Found exporter", zap.String("signozspanmetrics-exporter", name))
+				p.logger.Info("Found exporter", zap.String("bylonisspanmetrics-exporter", name))
 			}
 		}
 	}
@@ -579,10 +582,6 @@ func (p *processorImp) buildMetrics() (pmetric.Metrics, error) {
 
 	if err := p.collectExpHistogramMetrics(ilm); err != nil {
 		return pmetric.Metrics{}, err
-	}
-
-	if p.config.LegacyMetricNames {
-		legacynames.AppendLegacyCopies(ilm.Metrics())
 	}
 
 	p.metricKeyToDimensions.RemoveEvictedItems()
@@ -1196,7 +1195,7 @@ func (p *processorImp) buildDimensionKVs(serviceName string, span ptrace.Span, o
 	dims.PutStr(resourcePrefix+collectorID, p.instanceID)
 	for _, d := range optionalDims {
 		// Already tagged above from the collector instance ID.
-		if d.name == collectorID || d.name == legacynames.LegacyCollectorIDKey {
+		if d.name == collectorID {
 			continue
 		}
 		v, ok, foundInResource := getDimensionValueWithResource(d, span.Attributes(), resourceAttrs)
@@ -1229,7 +1228,7 @@ func (p *processorImp) buildCustomDimensionKVs(serviceName string, span ptrace.S
 	dims.PutStr(resourcePrefix+collectorID, p.instanceID)
 	for _, d := range optionalDims {
 		// Already tagged above from the collector instance ID.
-		if d.name == collectorID || d.name == legacynames.LegacyCollectorIDKey {
+		if d.name == collectorID {
 			continue
 		}
 		v, ok, foundInResource := getDimensionValueWithResource(d, span.Attributes(), resourceAttrs)

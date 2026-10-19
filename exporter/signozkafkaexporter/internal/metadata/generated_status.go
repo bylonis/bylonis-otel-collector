@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	Type      = component.MustNewType("signozkafkaexporter")
+	Type      = component.MustNewType("byloniskafkaexporter")
 	ScopeName = "github.com/bylonis/bylonis-otel-collector/exporter/signozkafkaexporter"
 )
 
