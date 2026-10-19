@@ -3,7 +3,7 @@ package opamp
 import (
 	"context"
 
-	"github.com/bylonis/bylonis-otel-collector/signozcol"
+	"github.com/bylonis/bylonis-otel-collector/byloniscol"
 	"go.uber.org/zap"
 )
 
@@ -11,7 +11,7 @@ type simpleClient struct {
 	baseClient
 }
 
-func NewSimpleClient(coll *signozcol.WrappedCollector, logger *zap.Logger) *simpleClient {
+func NewSimpleClient(coll *byloniscol.WrappedCollector, logger *zap.Logger) *simpleClient {
 	return &simpleClient{
 		baseClient: baseClient{
 			coll:    coll,

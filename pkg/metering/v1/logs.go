@@ -14,7 +14,7 @@ type logs struct {
 func NewLogs(logger *zap.Logger) metering.Logs {
 	return &logs{
 		Logger: logger,
-		Sizer:  metering.NewJSONSizer(logger, metering.WithExcludePattern(metering.ExcludeSigNozWorkspaceResourceAttrs)),
+		Sizer:  metering.NewJSONSizer(logger, metering.WithExcludePattern(metering.ExcludeBylonisWorkspaceResourceAttrs)),
 	}
 }
 

@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/bylonis/bylonis-otel-collector/signozcol"
+	"github.com/bylonis/bylonis-otel-collector/byloniscol"
 	"go.opentelemetry.io/collector/otelcol"
 	"go.uber.org/zap"
 )
@@ -23,7 +23,7 @@ type Client interface {
 type baseClient struct {
 	err     chan error
 	stopped chan bool
-	coll    *signozcol.WrappedCollector
+	coll    *byloniscol.WrappedCollector
 	logger  *zap.Logger
 
 	reloadMux   sync.Mutex

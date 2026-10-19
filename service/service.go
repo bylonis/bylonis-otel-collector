@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/bylonis/bylonis-otel-collector/byloniscol"
 	"github.com/bylonis/bylonis-otel-collector/opamp"
-	"github.com/bylonis/bylonis-otel-collector/signozcol"
 	"go.uber.org/zap"
 )
 
@@ -28,7 +28,7 @@ type service struct {
 }
 
 func New(
-	wrappedCollector *signozcol.WrappedCollector,
+	wrappedCollector *byloniscol.WrappedCollector,
 	logger *zap.Logger,
 	managerConfigPath string,
 	collectorConfigPath string,

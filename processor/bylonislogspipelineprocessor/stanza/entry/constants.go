@@ -1,0 +1,3 @@
+package bylonisstanzaentry
+
+const InternalTempAttributePrefix = "__bylonislogspipelineprocessor_internal__"

@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	distributedFieldKeysTable  = constants.SignozMetadataDB + "." + constants.DistributedFieldKeysTable
+	distributedFieldKeysTable  = constants.MetadataDB + "." + constants.DistributedFieldKeysTable
 	distributedTagAttrsV2Table = "bylonis_logs.distributed_tag_attributes_v2"
 
 	jsonArraySuffix  = "[]"

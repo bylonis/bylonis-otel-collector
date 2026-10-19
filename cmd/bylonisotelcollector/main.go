@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/bylonis/bylonis-otel-collector/byloniscol"
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
 	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/migrate"
 	"github.com/bylonis/bylonis-otel-collector/components"
@@ -16,7 +17,6 @@ import (
 	"github.com/bylonis/bylonis-otel-collector/pkg/dbnames"
 	"github.com/bylonis/bylonis-otel-collector/pkg/previewserver"
 	"github.com/bylonis/bylonis-otel-collector/service"
-	"github.com/bylonis/bylonis-otel-collector/signozcol"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -53,8 +53,8 @@ func main() {
 
 			ctx := context.Background()
 
-			coll := signozcol.New(
-				signozcol.WrappedCollectorSettings{
+			coll := byloniscol.New(
+				byloniscol.WrappedCollectorSettings{
 					ConfigPaths:  []string{collectorConfig},
 					Version:      constants.Version,
 					Desc:         constants.Desc,

@@ -25,7 +25,7 @@ func TestTracesSizeWithNoEvents(t *testing.T) {
 	assert.Equal(t, 406, size)
 }
 
-func TestTracesSizeWithNoEventAndSigNozResource(t *testing.T) {
+func TestTracesSizeWithNoEventAndWorkspaceResource(t *testing.T) {
 	traces := ptracesgen.Generate(
 		ptracesgen.WithSpanCount(1),
 		ptracesgen.WithResourceAttributeCount(1),
