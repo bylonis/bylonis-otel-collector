@@ -41,6 +41,25 @@ Every flag can be set with an env var named `BYLONIS_OTEL_COLLECTOR_<FLAG>`
 collector. Apart from the database names, migrations, tables and queries don't
 change.
 
+### Logs pipelines preview
+
+The ByLonis backend runs the logs pipelines preview, and validates pipelines
+before saving them, in the collector of the tenant (`pkg/previewserver`): it
+sends the pipeline processors it generates and sample logs, and gets the
+processed logs back. The server starts with the collector, outside the config
+managed over OpAMP, and only when a token is set.
+
+| Env var | Default | Meaning |
+|---|---|---|
+| `BYLONIS_OTEL_COLLECTOR_PREVIEW_LISTEN` | `:4319` | Address of the preview server |
+| `BYLONIS_OTEL_COLLECTOR_PREVIEW_TOKEN` | (none: off) | Bearer token, at least 16 characters. The backend uses the same one (`BYLONIS_LOGSPIPELINE_PREVIEW_TOKEN`) |
+
+Keep the port on the internal network of the tenant: don't publish it. The
+endpoint is `POST /v1/logs-pipelines/preview`; it only accepts
+`bylonislogspipeline` processors, never expands `${...}` in their config and
+never logs the logs it gets. Limits: 1 MiB body, 100 logs and 100 processors
+per request, 10 s, 2 previews at once (429 beyond).
+
 ### Compatibility with SigNoz deployments
 
 These keep working so an existing deployment can switch images; one whose

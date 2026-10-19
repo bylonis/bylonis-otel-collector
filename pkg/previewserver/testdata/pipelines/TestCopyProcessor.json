@@ -1,0 +1,138 @@
+{
+  "source": "bylonis/bylonis pkg/query-service/app/logparsingpipeline TestCopyProcessor (processors: testdata/preview/TestCopyProcessor.yaml)",
+  "cases": [
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"method\"] == \"GET\"",
+                      "output": "test-add-parser"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "from": "attributes.method",
+                  "id": "test-add-parser",
+                  "if": "attributes?.method != nil",
+                  "to": "attributes.copied_method",
+                  "type": "copy"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341456773704656",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "36636231663231302d393937302d3462",
+                      "spanId": "6636646138643461"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341456773704656",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "copied_method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        }
+                      ],
+                      "traceId": "36636231663231302d393937302d3462",
+                      "spanId": "6636646138643461"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    }
+  ]
+}

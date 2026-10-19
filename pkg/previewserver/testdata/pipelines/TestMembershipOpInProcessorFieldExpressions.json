@@ -1,0 +1,221 @@
+{
+  "source": "bylonis/bylonis pkg/query-service/app/logparsingpipeline TestMembershipOpInProcessorFieldExpressions (processors: testdata/preview/TestMembershipOpInProcessorFieldExpressions.yaml)",
+  "cases": [
+    {
+      "request": {
+        "processors": [
+          {
+            "name": "bylonislogspipeline/pipeline_pipeline1",
+            "config": {
+              "operators": [
+                {
+                  "default": "noop",
+                  "id": "router_signoz",
+                  "routes": [
+                    {
+                      "expr": "attributes[\"http.method\"] == \"GET\"",
+                      "output": "move"
+                    }
+                  ],
+                  "type": "router"
+                },
+                {
+                  "from": "attributes[\"http.method\"]",
+                  "id": "move",
+                  "if": "attributes[\"http.method\"] != nil",
+                  "output": "json",
+                  "to": "attributes[\"test.http.method\"]",
+                  "type": "move"
+                },
+                {
+                  "id": "json",
+                  "if": "attributes[\"order.products\"] != nil && ((type(attributes[\"order.products\"]) == \"string\" && isJSON(attributes[\"order.products\"]) && type(fromJSON(unquote(attributes[\"order.products\"]))) == \"map\" ) || type(attributes[\"order.products\"]) == \"map\")",
+                  "output": "move1",
+                  "parse_from": "attributes[\"order.products\"]",
+                  "parse_to": "attributes[\"order.products\"]",
+                  "type": "json_parser"
+                },
+                {
+                  "from": "attributes[\"order.products\"].ids",
+                  "id": "move1",
+                  "if": "attributes[\"order.products\"]?.ids != nil",
+                  "output": "move2",
+                  "to": "attributes[\"order.product_ids\"]",
+                  "type": "move"
+                },
+                {
+                  "from": "attributes.test?.doesnt_exist",
+                  "id": "move2",
+                  "if": "attributes?.test?.doesnt_exist != nil",
+                  "output": "add",
+                  "to": "attributes[\"test.doesnt_exist\"]",
+                  "type": "move"
+                },
+                {
+                  "field": "attributes[\"order.pids\"].missing_field",
+                  "id": "add",
+                  "if": "(attributes?.a != nil && attributes.a[\"b.c\"]?.d != nil && len(attributes.a[\"b.c\"].d) > 4 && attributes.a[\"b.c\"].d[4]?.e != nil) && (resource?.f != nil)",
+                  "output": "add2",
+                  "type": "add",
+                  "value": "EXPR(attributes.a[\"b.c\"].d[4].e + resource.f)"
+                },
+                {
+                  "field": "attributes[\"order.pids.pid0\"]",
+                  "id": "add2",
+                  "if": "(attributes[\"order.product_ids\"] != nil && len(attributes[\"order.product_ids\"]) > 0 && attributes[\"order.product_ids\"][0] != nil)",
+                  "output": "add3",
+                  "type": "add",
+                  "value": "EXPR(attributes[\"order.product_ids\"][0])"
+                },
+                {
+                  "field": "attributes[\"attrs.test.value\"]",
+                  "id": "add3",
+                  "if": "(attributes?.test?.value != nil)",
+                  "output": "add4",
+                  "type": "add",
+                  "value": "EXPR(attributes.test?.value)"
+                },
+                {
+                  "field": "attributes[\"attrs.test.value\"]",
+                  "id": "add4",
+                  "if": "(attributes?.temp?.request_context?.scraper != nil)",
+                  "type": "add",
+                  "value": "EXPR((attributes.temp?.request_context?.scraper ?? [nil])[0])"
+                },
+                {
+                  "id": "noop",
+                  "type": "noop"
+                }
+              ]
+            }
+          }
+        ],
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341454858082041",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        },
+                        {
+                          "key": "http.method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "order.products",
+                          "value": {
+                            "stringValue": "{\"ids\": [\"pid0\", \"pid1\"]}"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        }
+                      ],
+                      "traceId": "61613537353432302d383161302d3433",
+                      "spanId": "6233313039323735"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "timeout_ms": 200
+      },
+      "response": {
+        "logs": {
+          "resourceLogs": [
+            {
+              "resource": {},
+              "scopeLogs": [
+                {
+                  "scope": {},
+                  "logRecords": [
+                    {
+                      "timeUnixNano": "1792341454858082041",
+                      "severityNumber": 9,
+                      "severityText": "INFO",
+                      "body": {
+                        "stringValue": "test log"
+                      },
+                      "attributes": [
+                        {
+                          "key": "test.http.method",
+                          "value": {
+                            "stringValue": "GET"
+                          }
+                        },
+                        {
+                          "key": "order.products",
+                          "value": {
+                            "kvlistValue": {}
+                          }
+                        },
+                        {
+                          "key": "__bylonis_log_id__",
+                          "value": {
+                            "stringValue": ""
+                          }
+                        },
+                        {
+                          "key": "order.product_ids",
+                          "value": {
+                            "arrayValue": {
+                              "values": [
+                                {
+                                  "stringValue": "pid0"
+                                },
+                                {
+                                  "stringValue": "pid1"
+                                }
+                              ]
+                            }
+                          }
+                        },
+                        {
+                          "key": "order.pids.pid0",
+                          "value": {
+                            "stringValue": "pid0"
+                          }
+                        },
+                        {
+                          "key": "__bylonis_input_idx__",
+                          "value": {
+                            "intValue": "0"
+                          }
+                        }
+                      ],
+                      "traceId": "61613537353432302d383161302d3433",
+                      "spanId": "6233313039323735"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "collector_logs": []
+      }
+    }
+  ]
+}
