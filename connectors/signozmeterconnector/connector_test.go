@@ -59,9 +59,10 @@ func TestTracesToMetrics(t *testing.T) {
 			testSpans := ptracesgen.Generate(ptracesgen.WithSpanCount(10), ptracesgen.WithResourceAttributeStringValue("unknown_service"))
 			assert.NoError(t, conn.ConsumeTraces(context.Background(), testSpans))
 
-			// Wait for the metrics to be flushed based on the MetricsFlushInterval
-			time.Sleep(tc.cfg.MetricsFlushInterval * 2)
+			// Wait for the metrics to be flushed based on the MetricsFlushInterval.
+			// A fixed sleep of two intervals was flaky on loaded runners.
 			// only 2 metrics for span size and span count will be exported
+			assert.Eventually(t, func() bool { return sink.DataPointCount() >= 2 }, 5*time.Second, tc.cfg.MetricsFlushInterval)
 			assert.Equal(t, 2, sink.DataPointCount())
 
 		})
@@ -109,9 +110,10 @@ func TestMetricsToMetrics(t *testing.T) {
 			), pmetricsgen.WithResourceAttributeStringValue("unknown_service"))
 			assert.NoError(t, conn.ConsumeMetrics(context.Background(), testMetrics))
 
-			// Wait for the metrics to be flushed based on the MetricsFlushInterval
-			time.Sleep(tc.cfg.MetricsFlushInterval * 2)
+			// Wait for the metrics to be flushed based on the MetricsFlushInterval.
+			// A fixed sleep of two intervals was flaky on loaded runners.
 			// only 2 metrics for span size and span count will be exported
+			assert.Eventually(t, func() bool { return sink.DataPointCount() >= 2 }, 5*time.Second, tc.cfg.MetricsFlushInterval)
 			assert.Equal(t, 2, sink.DataPointCount())
 
 		})
@@ -155,9 +157,10 @@ func TestLogsToMetrics(t *testing.T) {
 			testSpans := plogsgen.Generate()
 			assert.NoError(t, conn.ConsumeLogs(context.Background(), testSpans))
 
-			// Wait for the metrics to be flushed based on the MetricsFlushInterval
-			time.Sleep(tc.cfg.MetricsFlushInterval * 2)
+			// Wait for the metrics to be flushed based on the MetricsFlushInterval.
+			// A fixed sleep of two intervals was flaky on loaded runners.
 			// only 2 metrics for span size and span count will be exported
+			assert.Eventually(t, func() bool { return sink.DataPointCount() >= 2 }, 5*time.Second, tc.cfg.MetricsFlushInterval)
 			assert.Equal(t, 2, sink.DataPointCount())
 
 		})
