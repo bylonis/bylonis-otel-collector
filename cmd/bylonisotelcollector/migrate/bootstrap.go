@@ -160,7 +160,7 @@ func (cmd *bootstrap) CreateMigrationTables(ctx context.Context) error {
 				continue
 			}
 
-			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.SignozLogsDB, true)
+			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.LogsDB, true)
 			if err != nil {
 				return err
 			}
@@ -178,7 +178,7 @@ func (cmd *bootstrap) CreateMigrationTables(ctx context.Context) error {
 				continue
 			}
 
-			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.SignozMetricsDB, true)
+			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.MetricsDB, true)
 			if err != nil {
 				return err
 			}
@@ -196,7 +196,7 @@ func (cmd *bootstrap) CreateMigrationTables(ctx context.Context) error {
 				continue
 			}
 
-			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.SignozMetricsDB, true)
+			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.MetricsDB, true)
 			if err != nil {
 				return err
 			}
@@ -214,7 +214,7 @@ func (cmd *bootstrap) CreateMigrationTables(ctx context.Context) error {
 				continue
 			}
 
-			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.SignozMetricsDB, true)
+			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.MetricsDB, true)
 			if err != nil {
 				return err
 			}
@@ -232,7 +232,7 @@ func (cmd *bootstrap) CreateMigrationTables(ctx context.Context) error {
 				continue
 			}
 
-			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.SignozMetricsDB, true)
+			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.MetricsDB, true)
 			if err != nil {
 				return err
 			}
@@ -250,7 +250,7 @@ func (cmd *bootstrap) CreateMigrationTables(ctx context.Context) error {
 				continue
 			}
 
-			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.SignozMetricsDB, true)
+			err = cmd.migrationManager.RunOperation(ctx, operation, migration.MigrationID, schemamigrator.MetricsDB, true)
 			if err != nil {
 				return err
 			}

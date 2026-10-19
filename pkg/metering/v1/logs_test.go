@@ -24,7 +24,7 @@ func TestLogsSize(t *testing.T) {
 	assert.Equal(t, 10*(8*(10+20+5)+7+2+2+100), size)
 }
 
-func TestLogsSizeWithExcludedSigNozResources(t *testing.T) {
+func TestLogsSizeWithExcludedWorkspaceResources(t *testing.T) {
 	logs := plogsgen.Generate(
 		plogsgen.WithLogRecordCount(10),
 		plogsgen.WithResourceAttributeCount(8),

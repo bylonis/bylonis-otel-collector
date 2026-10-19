@@ -1,25 +1,25 @@
 package components
 
 import (
-	"github.com/bylonis/bylonis-otel-collector/connectors/signozmeterconnector"
+	"github.com/bylonis/bylonis-otel-collector/connectors/bylonismeterconnector"
+	"github.com/bylonis/bylonis-otel-collector/exporter/bylonisclickhousemeter"
+	"github.com/bylonis/bylonis-otel-collector/exporter/bylonisclickhousemetrics"
+	"github.com/bylonis/bylonis-otel-collector/exporter/byloniskafkaexporter"
 	"github.com/bylonis/bylonis-otel-collector/exporter/clickhouselogsexporter"
 	"github.com/bylonis/bylonis-otel-collector/exporter/clickhousetracesexporter"
 	"github.com/bylonis/bylonis-otel-collector/exporter/jsontypeexporter"
 	"github.com/bylonis/bylonis-otel-collector/exporter/metadataexporter"
-	"github.com/bylonis/bylonis-otel-collector/exporter/signozclickhousemeter"
-	"github.com/bylonis/bylonis-otel-collector/exporter/signozclickhousemetrics"
-	"github.com/bylonis/bylonis-otel-collector/exporter/signozkafkaexporter"
-	signozhealthcheckextension "github.com/bylonis/bylonis-otel-collector/extension/healthcheckextension"
+	bylonishealthcheckextension "github.com/bylonis/bylonis-otel-collector/extension/healthcheckextension"
 	_ "github.com/bylonis/bylonis-otel-collector/pkg/parser/grok"
-	"github.com/bylonis/bylonis-otel-collector/processor/signozllmpricingprocessor"
-	"github.com/bylonis/bylonis-otel-collector/processor/signozlogspipelineprocessor"
-	"github.com/bylonis/bylonis-otel-collector/processor/signozspanmetricsprocessor"
-	"github.com/bylonis/bylonis-otel-collector/processor/signoztailsampler"
-	"github.com/bylonis/bylonis-otel-collector/processor/signoztransformprocessor"
+	"github.com/bylonis/bylonis-otel-collector/processor/bylonisllmpricingprocessor"
+	"github.com/bylonis/bylonis-otel-collector/processor/bylonislogspipelineprocessor"
+	"github.com/bylonis/bylonis-otel-collector/processor/bylonisspanmetricsprocessor"
+	"github.com/bylonis/bylonis-otel-collector/processor/bylonistailsampler"
+	"github.com/bylonis/bylonis-otel-collector/processor/bylonistransformprocessor"
+	"github.com/bylonis/bylonis-otel-collector/receiver/bylonisawsfirehosereceiver"
+	"github.com/bylonis/bylonis-otel-collector/receiver/byloniskafkareceiver"
 	"github.com/bylonis/bylonis-otel-collector/receiver/clickhousesystemtablesreceiver"
 	"github.com/bylonis/bylonis-otel-collector/receiver/httplogreceiver"
-	"github.com/bylonis/bylonis-otel-collector/receiver/signozawsfirehosereceiver"
-	"github.com/bylonis/bylonis-otel-collector/receiver/signozkafkareceiver"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/countconnector"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/datadogconnector"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/exceptionsconnector"
@@ -344,8 +344,8 @@ func Components() (otelcol.Factories, error) {
 		tlscheckreceiver.NewFactory(),
 		windowsservicereceiver.NewFactory(),
 		yanggrpcreceiver.NewFactory(),
-		signozkafkareceiver.NewFactory(),
-		signozawsfirehosereceiver.NewFactory(),
+		byloniskafkareceiver.NewFactory(),
+		bylonisawsfirehosereceiver.NewFactory(),
 	}
 
 	exporters := []exporter.Factory{
@@ -354,7 +354,7 @@ func Components() (otelcol.Factories, error) {
 		awss3exporter.NewFactory(),
 		cassandraexporter.NewFactory(),
 		clickhouselogsexporter.NewFactory(),
-		signozclickhousemetrics.NewFactory(),
+		bylonisclickhousemetrics.NewFactory(),
 		clickhousetracesexporter.NewFactory(),
 		debugexporter.NewFactory(),
 		fileexporter.NewFactory(),
@@ -367,11 +367,11 @@ func Components() (otelcol.Factories, error) {
 		prometheusremotewriteexporter.NewFactory(),
 		pulsarexporter.NewFactory(),
 		rabbitmqexporter.NewFactory(),
-		signozkafkaexporter.NewFactory(),
+		byloniskafkaexporter.NewFactory(),
 		syslogexporter.NewFactory(),
 		zipkinexporter.NewFactory(),
 		nopexporter.NewFactory(),
-		signozclickhousemeter.NewFactory(),
+		bylonisclickhousemeter.NewFactory(),
 	}
 
 	processors := []processor.Factory{
@@ -401,15 +401,15 @@ func Components() (otelcol.Factories, error) {
 		resourceprocessor.NewFactory(),
 		schemaprocessor.NewFactory(),
 		sumologicprocessor.NewFactory(),
-		signozspanmetricsprocessor.NewFactory(),
+		bylonisspanmetricsprocessor.NewFactory(),
 		spanprocessor.NewFactory(),
 		tailsamplingprocessor.NewFactory(),
 		transformprocessor.NewFactory(),
 		unrollprocessor.NewFactory(),
-		signoztailsampler.NewFactory(),
-		signoztransformprocessor.NewFactory(),
-		signozlogspipelineprocessor.NewFactory(),
-		signozllmpricingprocessor.NewFactory(),
+		bylonistailsampler.NewFactory(),
+		bylonistransformprocessor.NewFactory(),
+		bylonislogspipelineprocessor.NewFactory(),
+		bylonisllmpricingprocessor.NewFactory(),
 	}
 
 	connectors := []connector.Factory{
@@ -428,7 +428,7 @@ func Components() (otelcol.Factories, error) {
 		slowsqlconnector.NewFactory(),
 		spanmetricsconnector.NewFactory(),
 		sumconnector.NewFactory(),
-		signozmeterconnector.NewFactory(),
+		bylonismeterconnector.NewFactory(),
 	}
 
 	factories, err := CoreComponents(
@@ -472,7 +472,7 @@ func CoreComponents(
 		oidcauthextension.NewFactory(),
 		healthcheckextension.NewFactory(),
 		pprofextension.NewFactory(),
-		signozhealthcheckextension.NewFactory(),
+		bylonishealthcheckextension.NewFactory(),
 		zpagesextension.NewFactory(),
 		azureauthextension.NewFactory(),
 	)

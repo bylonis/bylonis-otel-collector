@@ -12,8 +12,8 @@ import (
 
 	"github.com/goccy/go-json"
 
-	tracesschema "github.com/bylonis/bylonis-otel-collector/pkg/schema/traces"
 	"github.com/bylonis/bylonis-otel-collector/pkg/metering"
+	tracesschema "github.com/bylonis/bylonis-otel-collector/pkg/schema/traces"
 	"github.com/bylonis/bylonis-otel-collector/usage"
 	"github.com/bylonis/bylonis-otel-collector/utils"
 	"github.com/bylonis/bylonis-otel-collector/utils/fingerprint"
@@ -268,7 +268,7 @@ func newStructuredSpanV3(bucketStart uint64, fingerprint string, otelSpan ptrace
 	})
 
 	resource.Attributes().Range(func(k string, v pcommon.Value) bool {
-		isBillable := !metering.ExcludeSigNozWorkspaceResourceAttrs.MatchString(k)
+		isBillable := !metering.ExcludeBylonisWorkspaceResourceAttrs.MatchString(k)
 		if v.Type() == pcommon.ValueTypeMap {
 			result := flatten.FlattenJSON(v.Map().AsRaw(), k)
 			for tempKey, tempVal := range result {

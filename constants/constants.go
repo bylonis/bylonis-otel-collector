@@ -6,7 +6,7 @@ const (
 	BodyPromotedColumn       = "body_promoted"
 	BodyPromotedColumnPrefix = "body_promoted."
 
-	SignozMetadataDB             = "bylonis_metadata"
+	MetadataDB                   = "bylonis_metadata"
 	LocalFieldKeysTable          = "field_keys"
 	DistributedFieldKeysTable    = "distributed_field_keys"
 	FieldKeysTableNameColumn     = "field_name"
