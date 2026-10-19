@@ -60,7 +60,7 @@ func main() {
 				},
 			)
 
-			svc, err := service.New(coll, logger, managerConfig, collectorConfig)
+			svc, err := service.New(coll, logger, managerConfig, collectorConfig, config.Collector.OpAMPToken)
 			if err != nil {
 				logger.Fatal("failed to create collector service:", zap.Error(err))
 			}

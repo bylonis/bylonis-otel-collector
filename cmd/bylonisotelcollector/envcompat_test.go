@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 
+	"github.com/bylonis/bylonis-otel-collector/cmd/bylonisotelcollector/config"
+	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -101,4 +103,18 @@ func TestSetFlagsFromEnvInvalidValue(t *testing.T) {
 	err := setFlagsFromEnv(flags, lookupFrom(map[string]string{"BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION": "maybe"}), zap.NewNop())
 
 	assert.ErrorContains(t, err, "BYLONIS_OTEL_COLLECTOR_CLICKHOUSE_REPLICATION")
+}
+
+// The OpAMP token of the collector command comes from BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN.
+func TestSetFlagsFromEnvOpAMPToken(t *testing.T) {
+	cmd := &cobra.Command{Use: "test"}
+	config.Collector.RegisterFlags(cmd)
+	t.Cleanup(func() { config.Collector.OpAMPToken = "" })
+	flags := cmd.PersistentFlags()
+	require.NoError(t, flags.Parse(nil))
+
+	env := map[string]string{"BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN": "s3cret-token"}
+	require.NoError(t, setFlagsFromEnv(flags, lookupFrom(env), zap.NewNop()))
+
+	assert.Equal(t, "s3cret-token", config.Collector.OpAMPToken)
 }

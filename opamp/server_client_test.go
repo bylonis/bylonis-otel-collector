@@ -2,6 +2,7 @@ package opamp
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"sync/atomic"
 	"testing"
@@ -27,6 +28,10 @@ func TestNewClient(t *testing.T) {
 		conn.Store(c)
 	}
 	var connected int64
+	var authorization atomic.Value
+	srv.OnConnect = func(r *http.Request) {
+		authorization.Store(r.Header.Get("Authorization"))
+	}
 
 	srv.OnMessage = func(msg *protobufs.AgentToServer) *protobufs.ServerToAgent {
 		fileContents, err := os.ReadFile("testdata/coll-config-path-changed.yaml")
@@ -80,6 +85,7 @@ func TestNewClient(t *testing.T) {
 		},
 		CollectorConfigPath: "./testdata/coll-config-path.yaml",
 		WrappedCollector:    coll,
+		Token:               "test-opamp-token",
 	})
 
 	require.NoError(t, err)
@@ -97,4 +103,12 @@ func TestNewClient(t *testing.T) {
 	assert.Eventually(t, func() bool {
 		return atomic.LoadInt64(&connected) == 1
 	}, 15*time.Second, 10*time.Millisecond)
+
+	// The token goes in the WebSocket upgrade request.
+	assert.Equal(t, "Bearer test-opamp-token", authorization.Load())
+}
+
+func TestAuthHeader(t *testing.T) {
+	assert.Nil(t, authHeader(""), "no token, no header: servers that do not check it keep working")
+	assert.Equal(t, http.Header{"Authorization": []string{"Bearer abc"}}, authHeader("abc"))
 }

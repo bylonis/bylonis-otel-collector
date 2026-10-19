@@ -60,6 +60,15 @@ endpoint is `POST /v1/logs-pipelines/preview`; it only accepts
 never logs the logs it gets. Limits: 1 MiB body, 100 logs and 100 processors
 per request, 10 s, 2 previews at once (429 beyond).
 
+### OpAMP token
+
+With `--manager-config`, the collector gets its config from the OpAMP server of
+the ByLonis backend (`server_endpoint`). Set `BYLONIS_OTEL_COLLECTOR_OPAMP_TOKEN`
+(`--opamp-token`) and the collector sends `Authorization: Bearer <token>` when it
+opens the WebSocket connection; the backend rejects connections without the
+token it expects (`BYLONIS_OPAMP_TOKEN`). Without it, no header is sent and the
+log says so with a warning.
+
 ### Compatibility with SigNoz deployments
 
 These keep working so an existing deployment can switch images; one whose
