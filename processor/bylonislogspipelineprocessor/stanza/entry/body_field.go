@@ -88,7 +88,7 @@ func ParseBodyJson(entry *entry.Entry) map[string]any {
 		if err == nil {
 			// Attributes keys starting with InternalTempAttributePrefix
 			// get ignored when entries are converted back to plog.Logs
-			// See `convertEntriesToPlogs` in signozlogspipelineprocess/utils.go
+			// See `convertEntriesToPlogs` in bylonislogspipelineprocessor/utils.go
 			entry.Attributes[cachedBodyJsonKey] = parsedBody
 			return parsedBody
 		}

@@ -25,11 +25,11 @@ bylonisllmpricing:
         in: 3.0
         out: 15.0
   output_attrs:
-    in: "_signoz.gen_ai.cost_input"
-    out: "_signoz.gen_ai.cost_output"
-    cache_read: "_signoz.gen_ai.cost_cache_read"
-    cache_write: "_signoz.gen_ai.cost_cache_write"
-    total: "_signoz.gen_ai.total_cost"
+    in: "_bylonis.gen_ai.cost_input"
+    out: "_bylonis.gen_ai.cost_output"
+    cache_read: "_bylonis.gen_ai.cost_cache_read"
+    cache_write: "_bylonis.gen_ai.cost_cache_write"
+    total: "_bylonis.gen_ai.total_cost"
 
 # Minimal valid — only total output attr required.
 bylonisllmpricing/minimal:
@@ -47,7 +47,7 @@ bylonisllmpricing/minimal:
         in: 1.0
         out: 2.0
   output_attrs:
-    total: "_signoz.gen_ai.total_cost"
+    total: "_bylonis.gen_ai.total_cost"
 
 # Invalid: missing attrs.model.
 bylonisllmpricing/no_model_attr:
@@ -65,7 +65,7 @@ bylonisllmpricing/no_model_attr:
         in: 1.0
         out: 2.0
   output_attrs:
-    total: "_signoz.gen_ai.total_cost"
+    total: "_bylonis.gen_ai.total_cost"
 
 # Invalid: missing pattern (empty list).
 bylonisllmpricing/no_pattern:
@@ -81,7 +81,7 @@ bylonisllmpricing/no_pattern:
         in: 1.0
         out: 2.0
   output_attrs:
-    total: "_signoz.gen_ai.total_cost"
+    total: "_bylonis.gen_ai.total_cost"
 
 # Invalid: unknown cache.mode.
 bylonisllmpricing/bad_cache_mode:
@@ -97,7 +97,7 @@ bylonisllmpricing/bad_cache_mode:
         in: 1.0
         out: 2.0
   output_attrs:
-    total: "_signoz.gen_ai.total_cost"
+    total: "_bylonis.gen_ai.total_cost"
 
 # Invalid: missing output_attrs.total.
 bylonisllmpricing/no_total_output:

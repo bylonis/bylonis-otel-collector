@@ -37,10 +37,7 @@ var (
 	MetadataDB  = dbnames.Metadata
 	AnalyticsDB = dbnames.Analytics
 	MeterDB     = dbnames.Meter
-	// SignozMetadataDB is the old name of MetadataDB, kept only because
-	// logs_migrations_v2.go uses it and the migrations are not edited.
-	SignozMetadataDB = MetadataDB
-	Databases        = []string{TracesDB, MetricsDB, LogsDB, MetadataDB, AnalyticsDB, MeterDB}
+	Databases   = []string{TracesDB, MetricsDB, LogsDB, MetadataDB, AnalyticsDB, MeterDB}
 
 	InProgressStatus = "in-progress"
 	FinishedStatus   = "finished"
@@ -556,7 +553,7 @@ func (m *MigrationManager) getDistributedDDLQueue(ctx context.Context) ([]Distri
 			if exception, ok := err.(*clickhouse.Exception); ok {
 				if exception.Code == 999 {
 					// ClickHouse DDLWorker is cleaning up entries in the distributed_ddl_queue before we can query it. This leads to the exception:
-					// code: 999, message: Coordination error: No node, path /clickhouse/signoz-clickhouse/task_queue/ddl/query-000000<some 4 digit number>/finished
+					// code: 999, message: Coordination error: No node, path /clickhouse/<cluster>/task_queue/ddl/query-000000<some 4 digit number>/finished
 
 					// It looks like this exception is safe to retry on.
 					if strings.Contains(exception.Error(), "No node") {

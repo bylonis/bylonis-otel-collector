@@ -1,4 +1,4 @@
-// Stanza operators registry dedicated to Signoz logs pipelines
+// Stanza operators registry dedicated to ByLonis logs pipelines
 
 package bylonislogspipelinestanzaoperator
 

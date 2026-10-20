@@ -270,7 +270,7 @@ ORDER BY name ASC`,
 		MigrationID: 2001,
 		UpItems: []Operation{
 			CreateTableOperation{
-				Database: SignozMetadataDB,
+				Database: MetadataDB,
 				Table:    constants.LocalFieldKeysTable,
 				Columns: []Column{
 					{Name: "signal", Type: ColumnTypeString, Codec: "ZSTD(1)"},
@@ -292,7 +292,7 @@ ORDER BY name ASC`,
 				},
 			},
 			CreateTableOperation{
-				Database: SignozMetadataDB,
+				Database: MetadataDB,
 				Table:    constants.DistributedFieldKeysTable,
 				Columns: []Column{
 					{Name: "signal", Type: ColumnTypeString, Codec: "ZSTD(1)"},
@@ -302,7 +302,7 @@ ORDER BY name ASC`,
 					{Name: constants.FieldKeysTableLastSeenColumn, Type: ColumnTypeUInt64, Codec: "DoubleDelta, LZ4"},
 				},
 				Engine: Distributed{
-					Database:    SignozMetadataDB,
+					Database:    MetadataDB,
 					Table:       constants.LocalFieldKeysTable,
 					ShardingKey: fmt.Sprintf("cityHash64(signal, field_context, %s)", constants.FieldKeysTableNameColumn),
 				},
@@ -460,11 +460,11 @@ ORDER BY name ASC`,
 				Column:   Column{Name: constants.BodyV2Column},
 			},
 			DropTableOperation{
-				Database: SignozMetadataDB,
+				Database: MetadataDB,
 				Table:    constants.DistributedFieldKeysTable,
 			},
 			DropTableOperation{
-				Database: SignozMetadataDB,
+				Database: MetadataDB,
 				Table:    constants.LocalFieldKeysTable,
 			},
 		},

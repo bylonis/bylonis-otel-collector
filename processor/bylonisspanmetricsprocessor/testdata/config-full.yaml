@@ -41,7 +41,7 @@ processors:
     max_services_to_track: 512
     max_operations_to_track_per_service: 69420
 
-    # Only the bylonis_* names, without the signoz_* copies.
+    # Removed in v1.0: false is still accepted, with a warning.
     legacy_metric_names: false
 
     # Additional list of dimensions on top of:
