@@ -138,7 +138,7 @@ func (e *kafkaLogsProducer) normalizeLogData(ld *plog.Logs) {
 			for lrIdx := 0; lrIdx < sl.LogRecords().Len(); lrIdx++ {
 				lr := sl.LogRecords().At(lrIdx)
 
-				// log body is always expected to be string in SigNoz
+				// log body is always expected to be string in ByLonis
 				if lr.Body().Type() != pcommon.ValueTypeStr {
 					var strBody string
 					if lr.Body().Type() == pcommon.ValueTypeBytes {

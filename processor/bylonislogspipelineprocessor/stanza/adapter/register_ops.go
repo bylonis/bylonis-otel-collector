@@ -1,4 +1,4 @@
-// Register copies of stanza operators dedicated to signoz logs pipelines
+// Register copies of stanza operators dedicated to ByLonis logs pipelines
 package bylonislogspipelinestanzaadapter
 
 import (

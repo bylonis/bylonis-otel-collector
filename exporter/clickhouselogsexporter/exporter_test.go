@@ -176,8 +176,8 @@ func TestGetResourceAttributesByte(t *testing.T) {
 			pass:      true,
 		},
 		{
-			name:      "add_non_signoz_resource_attribute",
-			attribute: "nonsignoz.internal.test",
+			name:      "add_non_bylonis_resource_attribute",
+			attribute: "nonbylonis.internal.test",
 			pass:      false,
 		},
 	}

@@ -37,7 +37,7 @@ Every schema migration using ON CLUSTER creates entries in the `system.distribut
 
 ### Materialization Migrations
 
-When we run materialization migrations on the tables, intra-shard insert would fail because the insert is performed on the old table schema. See more here https://github.com/SigNoz/signoz/issues/4566.
+When we run materialization migrations on the tables, intra-shard insert would fail because the insert is performed on the old table schema.
 
 
 These challenges necessitated a more mutation-aware migration approach with better detection and handling capabilities for ClickHouse's specific behavior.

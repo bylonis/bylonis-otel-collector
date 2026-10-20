@@ -197,7 +197,7 @@ func (p *logsPipelineProcessor) converterLoop(ctx context.Context, wg *sync.Wait
 // We deliberately use the local convertEntriesToPlogs (utils.go) instead of
 // adapter.ConvertEntries because the local version filters out attributes
 // prefixed with bylonisstanzaentry.InternalTempAttributePrefix, which the
-// SigNoz operator suite uses for scratch state. Those keys must not be
+// ByLonis operator suite uses for scratch state. Those keys must not be
 // emitted to the next consumer.
 func (p *logsPipelineProcessor) consumeStanzaLogEntries(ctx context.Context, entries []*entry.Entry) {
 	pLogs := convertEntriesToPlogs(entries)

@@ -189,7 +189,6 @@ func TestTraceProcessor(t *testing.T) {
 
 	// trace id and span id should be padded with 0s to the left
 	// if provided hex strings are not of the expected length
-	// See https://github.com/SigNoz/signoz/issues/3859 for an example
 
 	input = []plog.Logs{makePlog("test log", map[string]any{
 		"traceId": "da9c07cca0ceb692",
@@ -254,7 +253,7 @@ func TestTimeProcessor(t *testing.T) {
 	validateProcessorBehavior(t, confYaml, input, expectedOutput)
 }
 
-// Test that translated Signoz logs pipelines work as expected
+// Test that translated ByLonis logs pipelines work as expected
 func TestLogsPipelineWithRouterOp(t *testing.T) {
 	confYaml := `
   operators:
