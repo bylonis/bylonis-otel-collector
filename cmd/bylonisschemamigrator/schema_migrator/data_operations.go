@@ -63,3 +63,55 @@ func (i InsertIntoTable) ToSQL() string {
 	sql.WriteString(i.Values)
 	return sql.String()
 }
+
+// InsertIntoSelect representa un INSERT INTO … SELECT para rellenar una tabla
+// con datos que ya existen (bylonis#887). Es una operación pesada, así que corre
+// en la fase async del migrador, y esa fase solo ejecuta operaciones
+// idempotentes: quien la usa tiene que escribir Query de forma que repetirla no
+// duplique datos (por ejemplo, con una guarda sobre la tabla de destino o
+// insertando en un ReplacingMergeTree).
+type InsertIntoSelect struct {
+	Database string
+	Table    string
+	Columns  []string
+	Query    string
+}
+
+// OnCluster is a no-op: ClickHouse does not support INSERT ... ON CLUSTER.
+// Insert into a Distributed table to reach every shard.
+func (i InsertIntoSelect) OnCluster(string) Operation { return &i }
+
+// WithReplication is a no-op for this operation.
+func (i InsertIntoSelect) WithReplication() Operation { return &i }
+
+// ShouldWaitForDistributionQueue returns false as INSERTs do not start DDL queues.
+func (i InsertIntoSelect) ShouldWaitForDistributionQueue() (bool, string, string) {
+	return false, i.Database, i.Table
+}
+
+// IsMutation returns false (does not alter existing data parts).
+func (i InsertIntoSelect) IsMutation() bool { return false }
+
+// IsIdempotent returns true: Query must be written so that re-running it is safe.
+func (i InsertIntoSelect) IsIdempotent() bool { return true }
+
+// IsLightweight returns false: it reads and writes data, so it runs async.
+func (i InsertIntoSelect) IsLightweight() bool { return false }
+
+func (i InsertIntoSelect) ForceMigrate() bool { return false }
+
+func (i InsertIntoSelect) ToSQL() string {
+	var sql strings.Builder
+	sql.WriteString("INSERT INTO ")
+	sql.WriteString(i.Database)
+	sql.WriteString(".")
+	sql.WriteString(i.Table)
+	if len(i.Columns) > 0 {
+		sql.WriteString(" (")
+		sql.WriteString(strings.Join(i.Columns, ", "))
+		sql.WriteString(")")
+	}
+	sql.WriteString(" ")
+	sql.WriteString(i.Query)
+	return sql.String()
+}

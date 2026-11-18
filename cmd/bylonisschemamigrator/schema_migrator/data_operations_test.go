@@ -35,3 +35,18 @@ func TestInsertIntoTable(t *testing.T) {
 		})
 	}
 }
+
+func TestInsertIntoSelect(t *testing.T) {
+	op := InsertIntoSelect{
+		Database: "bylonis_metrics",
+		Table:    "distributed_capacity_series",
+		Columns:  []string{"env", "metric_name"},
+		Query:    "SELECT env, metric_name FROM bylonis_metrics.distributed_time_series_v4",
+	}
+	require.Equal(t, "INSERT INTO bylonis_metrics.distributed_capacity_series (env, metric_name) SELECT env, metric_name FROM bylonis_metrics.distributed_time_series_v4", op.ToSQL())
+	require.Equal(t, op.ToSQL(), op.OnCluster("cluster").ToSQL(), "INSERT has no ON CLUSTER")
+	require.True(t, op.IsIdempotent())
+	require.False(t, op.IsLightweight())
+	require.False(t, op.IsMutation())
+	require.False(t, op.ForceMigrate())
+}
