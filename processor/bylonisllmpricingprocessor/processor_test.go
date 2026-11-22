@@ -3,6 +3,7 @@ package bylonisllmpricingprocessor
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -300,4 +301,93 @@ func TestComputeAdditive(t *testing.T) {
 	assert.InDelta(t, 100*3.75/1e6, c.cacheWrite, 1e-9)
 	assert.InDelta(t, 500*15.0/1e6, c.output, 1e-9)
 	assert.InDelta(t, c.input+c.cacheRead+c.cacheWrite+c.output, c.total, 1e-9)
+}
+
+func spanAt(attrs map[string]any, at time.Time) ptrace.Traces {
+	td := buildTrace(attrs)
+	td.ResourceSpans().At(0).ScopeSpans().At(0).Spans().At(0).SetStartTimestamp(pcommon.NewTimestampFromTime(at))
+	return td
+}
+
+func totalOf(t *testing.T, td ptrace.Traces) (float64, bool) {
+	t.Helper()
+	v, ok := td.ResourceSpans().At(0).ScopeSpans().At(0).Spans().At(0).Attributes().Get("_bylonis.gen_ai.total_cost")
+	if !ok {
+		return 0, false
+	}
+	return v.Double(), true
+}
+
+func historyCfg() *Config {
+	cfg := *testCfg
+	cfg.Attrs.Region = "cloud.region"
+	cfg.DefaultPricing = PricingConfig{Rules: []PricingRule{
+		{Name: "m-2026-01", Pattern: []string{"m-1"}, From: "2026-01-01", In: 1, Out: 1, Cache: PricingRuleCache{Mode: CacheModeAdditive}},
+		{Name: "m-2026-06", Pattern: []string{"m-1"}, From: "2026-06-01", In: 2, Out: 2, Cache: PricingRuleCache{Mode: CacheModeAdditive}},
+		{Name: "m-eu", Pattern: []string{"m-1"}, From: "2026-01-01", Region: "eu", In: 9, Out: 9, Cache: PricingRuleCache{Mode: CacheModeAdditive}},
+		{Name: "sonnet-5", Pattern: []string{"claude-sonnet-5*"}, In: 10, Out: 10, Cache: PricingRuleCache{Mode: CacheModeAdditive}},
+		{Name: "sonnet-5-5", Pattern: []string{"claude-sonnet-5-5*"}, In: 2, Out: 2, Cache: PricingRuleCache{Mode: CacheModeAdditive}},
+	}}
+	return &cfg
+}
+
+func TestPriceInForceWhenTheSpanStarted(t *testing.T) {
+	p := newProcessor(historyCfg())
+	for _, tc := range []struct {
+		at, region string
+		want       float64
+	}{
+		{"2026-03-01", "", 2},    // 1M in + 1M out at 1 + 1 per million
+		{"2026-07-01", "", 4},    // the June price
+		{"2026-07-01", "eu", 18}, // the region's own price
+		{"2026-03-01", "us", 2},  // a region with no rule uses the generic one
+	} {
+		at, _ := time.Parse(DateLayout, tc.at)
+		attrs := map[string]any{"gen_ai.request.model": "m-1", "gen_ai.usage.input_tokens": 1_000_000, "gen_ai.usage.output_tokens": 1_000_000}
+		if tc.region != "" {
+			attrs["cloud.region"] = tc.region
+		}
+		td, err := p.ProcessTraces(context.Background(), spanAt(attrs, at))
+		require.NoError(t, err)
+		got, ok := totalOf(t, td)
+		require.True(t, ok, tc.at)
+		assert.InDelta(t, tc.want, got, 1e-9, "%s/%s", tc.at, tc.region)
+	}
+	// Before the first rule there is no price: the span is left alone, never priced as free.
+	old, _ := time.Parse(DateLayout, "2025-12-31")
+	td, _ := p.ProcessTraces(context.Background(), spanAt(map[string]any{"gen_ai.request.model": "m-1", "gen_ai.usage.input_tokens": 10}, old))
+	_, ok := totalOf(t, td)
+	assert.False(t, ok)
+}
+
+func TestMostSpecificPatternWins(t *testing.T) {
+	p := newProcessor(historyCfg())
+	at, _ := time.Parse(DateLayout, "2026-07-01")
+	for model, want := range map[string]float64{"claude-sonnet-5-5-20261001": 4, "claude-sonnet-5-20260101": 20} {
+		td, _ := p.ProcessTraces(context.Background(), spanAt(map[string]any{"gen_ai.request.model": model, "gen_ai.usage.input_tokens": 1_000_000, "gen_ai.usage.output_tokens": 1_000_000}, at))
+		got, ok := totalOf(t, td)
+		require.True(t, ok, model)
+		assert.InDelta(t, want, got, 1e-9, model)
+	}
+}
+
+func TestSkipExistingKeepsTheCostTheGatewayComputed(t *testing.T) {
+	cfg := *historyCfg()
+	cfg.SkipExisting = true
+	p := newProcessor(&cfg)
+	at, _ := time.Parse(DateLayout, "2026-07-01")
+	td, _ := p.ProcessTraces(context.Background(), spanAt(map[string]any{
+		"gen_ai.request.model": "m-1", "gen_ai.usage.input_tokens": 1_000_000, "_bylonis.gen_ai.total_cost": 0.5}, at))
+	got, _ := totalOf(t, td)
+	assert.InDelta(t, 0.5, got, 1e-9)
+	td, _ = p.ProcessTraces(context.Background(), spanAt(map[string]any{"gen_ai.request.model": "m-1", "gen_ai.usage.input_tokens": 1_000_000}, at))
+	got, _ = totalOf(t, td)
+	assert.InDelta(t, 2, got, 1e-9, "a span without a cost is still priced")
+}
+
+func TestValidateRejectsABadStartDate(t *testing.T) {
+	cfg := *historyCfg()
+	cfg.DefaultPricing.Rules[0].From = "yesterday"
+	assert.Error(t, cfg.Validate())
+	assert.NoError(t, historyCfg().Validate())
 }

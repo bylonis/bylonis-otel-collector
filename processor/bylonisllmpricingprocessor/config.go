@@ -3,7 +3,11 @@ package bylonisllmpricingprocessor // import "github.com/bylonis/bylonis-otel-co
 import (
 	"fmt"
 	"path"
+	"time"
 )
+
+// DateLayout is the format of a rule's start date.
+const DateLayout = "2006-01-02"
 
 type CacheMode string
 
@@ -22,6 +26,11 @@ type Config struct {
 	// OutputAttrs maps logical cost-field names to the span attribute keys
 	// where computed costs are written.
 	OutputAttrs OutputMapping `mapstructure:"output_attrs"`
+
+	// SkipExisting leaves a span alone when it already has the total cost attribute. The AI Gateway
+	// computes the cost at the source with the same table (#335); this keeps its figure and prices
+	// only what other applications send without one.
+	SkipExisting bool `mapstructure:"skip_existing"`
 }
 
 type AttrMapping struct {
@@ -30,6 +39,9 @@ type AttrMapping struct {
 	Out        string `mapstructure:"out"`
 	CacheRead  string `mapstructure:"cache_read"`
 	CacheWrite string `mapstructure:"cache_write"`
+	// Region is the span attribute that says where the model ran. Optional: without it, only rules
+	// with no region apply.
+	Region string `mapstructure:"region"`
 }
 
 type PricingConfig struct {
@@ -42,6 +54,13 @@ type PricingRule struct {
 	Cache   PricingRuleCache `mapstructure:"cache"`
 	In      float64          `mapstructure:"in"`
 	Out     float64          `mapstructure:"out"`
+
+	// From is the date (YYYY-MM-DD) from which the rule applies. Empty: always. Several rules for the
+	// same model with different dates are the history of its price: a span is priced with the rule that
+	// was in force when it started (#646).
+	From string `mapstructure:"from"`
+	// Region restricts the rule to spans that report this region (see attrs.region). Empty: any region.
+	Region string `mapstructure:"region"`
 }
 
 type PricingRuleCache struct {
@@ -95,6 +114,11 @@ func (c *Config) Validate() error {
 		}
 		if r.In < 0 || r.Out < 0 || r.Cache.Read < 0 || r.Cache.Write < 0 {
 			return fmt.Errorf("default_pricing.rules[%d] (pattern=%v): prices must be non-negative", i, r.Pattern)
+		}
+		if r.From != "" {
+			if _, err := time.Parse(DateLayout, r.From); err != nil {
+				return fmt.Errorf("default_pricing.rules[%d] (pattern=%v): from %q is not a date YYYY-MM-DD", i, r.Pattern, r.From)
+			}
 		}
 	}
 
