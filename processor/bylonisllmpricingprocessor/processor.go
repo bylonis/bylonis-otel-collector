@@ -3,6 +3,8 @@ package bylonisllmpricingprocessor // import "github.com/bylonis/bylonis-otel-co
 import (
 	"context"
 	"path"
+	"strings"
+	"time"
 
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/ptrace"
@@ -21,7 +23,9 @@ type costs struct {
 type compiledRule struct {
 	name       string
 	pattern    string
-	additive   bool // true → CacheModeAdditive, false → CacheModeSubtract
+	from       time.Time // zero: always
+	region     string    // empty: any
+	additive   bool      // true → CacheModeAdditive, false → CacheModeSubtract
 	in         float64
 	out        float64
 	cacheRead  float64
@@ -35,6 +39,8 @@ type llmCostProcessor struct {
 	outAttr        string
 	cacheReadAttr  string
 	cacheWriteAttr string
+	regionAttr     string
+	skipExisting   bool
 
 	// Destination attribute keys. Empty string means "don't write".
 	outInAttr         string
@@ -53,10 +59,16 @@ func newProcessor(cfg *Config) *llmCostProcessor {
 	// first-match-wins semantics across patterns within the same rule.
 	rules := make([]compiledRule, 0, len(cfg.DefaultPricing.Rules))
 	for _, r := range cfg.DefaultPricing.Rules {
+		var from time.Time
+		if r.From != "" {
+			from, _ = time.Parse(DateLayout, r.From) // validated by Config.Validate
+		}
 		for _, p := range r.Pattern {
 			rules = append(rules, compiledRule{
 				name:       r.Name,
 				pattern:    p,
+				from:       from,
+				region:     r.Region,
 				additive:   r.Cache.Mode == CacheModeAdditive,
 				in:         r.In,
 				out:        r.Out,
@@ -74,6 +86,8 @@ func newProcessor(cfg *Config) *llmCostProcessor {
 		outAttr:           cfg.Attrs.Out,
 		cacheReadAttr:     cfg.Attrs.CacheRead,
 		cacheWriteAttr:    cfg.Attrs.CacheWrite,
+		regionAttr:        cfg.Attrs.Region,
+		skipExisting:      cfg.SkipExisting,
 		outInAttr:         cfg.OutputAttrs.In,
 		outOutAttr:        cfg.OutputAttrs.Out,
 		outCacheReadAttr:  cfg.OutputAttrs.CacheRead,
@@ -93,7 +107,7 @@ func (p *llmCostProcessor) ProcessTraces(_ context.Context, td ptrace.Traces) (p
 		for j := 0; j < ilss.Len(); j++ {
 			spans := ilss.At(j).Spans()
 			for k := 0; k < spans.Len(); k++ {
-				p.processSpan(spans.At(k).Attributes())
+				p.processSpan(spans.At(k))
 			}
 		}
 	}
@@ -102,14 +116,27 @@ func (p *llmCostProcessor) ProcessTraces(_ context.Context, td ptrace.Traces) (p
 
 // processSpan finds the matching pricing rule for the span's model, computes
 // costs, and writes them back as span attributes.
-func (p *llmCostProcessor) processSpan(attrs pcommon.Map) {
+func (p *llmCostProcessor) processSpan(span ptrace.Span) {
+	attrs := span.Attributes()
 	modelVal, ok := attrs.Get(p.modelAttr)
 	if !ok {
 		return
 	}
 	model := modelVal.Str()
+	if p.skipExisting && p.outTotalAttr != "" {
+		if _, has := attrs.Get(p.outTotalAttr); has {
+			return
+		}
+	}
+	region := ""
+	if p.regionAttr != "" {
+		if v, ok := attrs.Get(p.regionAttr); ok {
+			region = v.Str()
+		}
+	}
+	at := span.StartTimestamp().AsTime()
 
-	rule := p.matchRule(model)
+	rule := p.matchRule(model, region, at)
 	if rule == nil {
 		return
 	}
@@ -127,14 +154,45 @@ func (p *llmCostProcessor) processSpan(attrs pcommon.Map) {
 	p.writeAttrs(attrs, c)
 }
 
-// matchRule returns the first rule whose pattern matches model, or nil.
-func (p *llmCostProcessor) matchRule(model string) *compiledRule {
+// matchRule returns the rule that prices a model at a moment, or nil. Among the rules whose pattern
+// matches: the most specific pattern (the longest literal) wins, so "claude-sonnet-5-5-*" beats
+// "claude-sonnet-5-*"; then one for the span's region over one for any region; then the latest start
+// date that is not after the span's start (the price in force then); then the first in the file.
+// A rule with a start date in the future of the span never applies to it.
+func (p *llmCostProcessor) matchRule(model, region string, at time.Time) *compiledRule {
+	var best *compiledRule
+	bestSpec := -1
 	for i := range p.rules {
-		if ok, _ := path.Match(p.rules[i].pattern, model); ok {
-			return &p.rules[i]
+		r := &p.rules[i]
+		if ok, _ := path.Match(r.pattern, model); !ok {
+			continue
+		}
+		if !r.from.IsZero() && r.from.After(at) {
+			continue
+		}
+		if r.region != "" && r.region != region {
+			continue
+		}
+		spec := specificity(r.pattern)
+		switch {
+		case best == nil, spec > bestSpec:
+			best, bestSpec = r, spec
+		case spec == bestSpec:
+			if (r.region != "") != (best.region != "") {
+				if r.region != "" {
+					best = r
+				}
+			} else if r.from.After(best.from) {
+				best = r
+			}
 		}
 	}
-	return nil
+	return best
+}
+
+// specificity is the length of the literal part of a glob.
+func specificity(pattern string) int {
+	return len(pattern) - strings.Count(pattern, "*") - strings.Count(pattern, "?")
 }
 
 // compute calculates per-bucket and total costs.
